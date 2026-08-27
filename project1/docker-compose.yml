@@ -1,0 +1,55 @@
+networks:
+  mc714-net:
+    driver: bridge
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    expose:
+      - 8080
+    deploy:
+      mode: replicated
+      replicas: 3
+    networks:
+      - mc714-net
+  load-balancer-round-robin:
+    container_name: load-balancer-round-robin
+    build:
+      context: ./load_balancer
+      dockerfile: Dockerfile
+      args:
+        STRATEGY: round-robin
+    ports:
+      - 8080:8080
+    depends_on:
+      - api
+    networks:
+      - mc714-net
+  load-balancer-random:
+    container_name: load-balancer-random
+    build:
+      context: ./load_balancer
+      dockerfile: Dockerfile
+      args:
+        STRATEGY: random
+    ports:
+      - 8081:8080
+    depends_on:
+      - api
+    networks:
+      - mc714-net
+  load-balancer-shortest-queue:
+    container_name: load-balancer-shortest-queue
+    build:
+      context: ./load_balancer
+      dockerfile: Dockerfile
+      args:
+        STRATEGY: shortest-queue
+    ports:
+      - 8082:8080
+    depends_on:
+      - api
+    networks:
+      - mc714-net
