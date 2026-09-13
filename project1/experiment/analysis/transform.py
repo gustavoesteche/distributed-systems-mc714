@@ -24,7 +24,13 @@ def parse_args():
         "--duration",
         type=float,
         default=500,
-        help="Observation window length used to compute the metrics.",
+        help="Total experiment length, in seconds.",
+    )
+    parser.add_argument(
+        "--warmup-time",
+        type=float,
+        default=0,
+        help="Seconds to ignore at the start of the experiment when computing metrics.",
     )
     parser.add_argument(
         "--lambda",
@@ -46,24 +52,34 @@ args = parse_args()
 filepath = args.filepath
 save_path = args.save_path
 duration = args.duration
+warmup_time = args.warmup_time
 lambda_ = args.lambda_
 mu = args.mu
 
+if warmup_time < 0:
+    raise SystemExit("--warmup-time must be >= 0")
+if warmup_time >= duration:
+    raise SystemExit("--warmup-time must be less than --duration")
+
 data = pd.read_csv(filepath)
 
-ts = data['start_time'].min()
-tf = data['start_time'].min() + duration
+t0 = data['start_time'].min()
+ts = t0 + warmup_time
+tf = t0 + duration
+obs_len = duration - warmup_time
 data['final_time'] = data['start_time'] + data['total_time']
 
+completed = (data['final_time'] > ts) & (data['final_time'] <= tf)
+
 # Average throughtput
-X = (data['final_time'] <= tf).sum() / duration
+X = completed.sum() / obs_len
 
 # Average request time
-er = data.loc[(data['final_time'] <= tf), 'total_time'].mean()
+er = data.loc[completed, 'total_time'].mean()
 
 # Find the average requests inside the server
 overlap = np.maximum(0.0, np.minimum(data['final_time'].to_numpy(), tf) - np.maximum(data['start_time'].to_numpy(), ts))
-en = overlap.sum() / duration
+en = overlap.sum() / obs_len
 
 # Compute utilization per machine
 machine_ids = {
@@ -78,7 +94,7 @@ data['busy_time'] = np.maximum(
     0.0, np.minimum(busy_end, tf) - np.maximum(busy_start, ts)
 )
 
-ui = data.groupby('machine_id')['busy_time'].sum() / duration
+ui = data.groupby('machine_id')['busy_time'].sum() / obs_len
 
 
 file_exists = os.path.isfile(save_path)
