@@ -36,11 +36,27 @@ type balancer struct {
 	http *http.Client
 }
 
+func experimentSeed() int64 {
+	const fallback int64 = 1337
+	s := os.Getenv("EXPERIMENT_SEED")
+	if s == "" {
+		return fallback
+	}
+	v, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		log.Printf("invalid EXPERIMENT_SEED %q, using %d", s, fallback)
+		return fallback
+	}
+	return v
+}
+
 func newBalancer(mode strategy) *balancer {
+	seed := experimentSeed()
+	log.Printf("experiment seed: %d\n", seed)
 	return &balancer{
 		mode: mode,
-		rng:  rand.New(rand.NewSource(1337)),
-		http: &http.Client{Timeout: 750 * time.Millisecond},
+		rng:  rand.New(rand.NewSource(seed)),
+		http: &http.Client{Timeout: 30 * time.Second},
 	}
 }
 

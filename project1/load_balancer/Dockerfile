@@ -10,5 +10,7 @@ WORKDIR /app
 COPY --from=builder /app/main .
 RUN chmod +x ./main
 ARG STRATEGY=round-robin
+ARG EXPERIMENT_SEED=1
 ENV STRATEGY=$STRATEGY
+ENV EXPERIMENT_SEED=$EXPERIMENT_SEED
 CMD ["sh", "-c", "./main \"$STRATEGY\""]

@@ -1,0 +1,32 @@
+x-settings: &settings
+  MU: 1
+  MU_1: 1 # TODO: feed one mu to each replica
+  MU_2: 1
+  MU_3: 1
+  SEED: 40
+  LAMBDA: 1.2
+  DURATION: 500
+  # Can be random, round-robin, shortest-queue or all.
+  # The last one runs all the methods experiments sequentially
+  STRATEGY: "random"
+
+services:
+  api:
+    environment:
+      <<: *settings
+
+  experiment:
+    environment:
+      <<: *settings
+
+  load-balancer-round-robin:
+    environment:
+      EXPERIMENT_SEED: 1
+
+  load-balancer-random:
+    environment:
+      EXPERIMENT_SEED: 2
+
+  load-balancer-shortest-queue:
+    environment:
+      EXPERIMENT_SEED: 3
