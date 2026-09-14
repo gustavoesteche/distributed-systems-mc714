@@ -22,6 +22,7 @@ Edite o arquivo `experiment-settings.yml`:
 - `LAMBDA`: taxa de chegada
 - `MU`: taxa de serviço
 - `DURATION`: duração do experimento, em segundos
+- `--warmup-time` (no `transform.py`): segundos iniciais ignorados no cálculo das métricas
 - `SEED`: semente das APIs
 - `STRATEGY`: `random`, `round-robin`, `shortest-queue` ou `all`
 
@@ -78,11 +79,12 @@ python experiment/analysis/transform.py \
   --filepath experiment/data/lambda_12.0_mu_1.0.csv \
   --save-path experiment/processed_data/results.csv \
   --duration 500 \
+  --warmup-time 50 \
   --lambda 1.2 \
   --mu 1
 ```
 
-O script acrescenta uma linha em `experiment/processed_data/results.csv` com `X`, `ER`, `EN`, `U1`, `U2`, `U3`, `lambda` e `mu`.
+`--warmup-time` ignora os primeiros segundos do experimento ao calcular as métricas. O script acrescenta uma linha em `experiment/processed_data/results.csv` com `X`, `ER`, `EN`, `ETq`, `U1`, `U2`, `U3`, `lambda` e `mu`.
 
 ### Teste manual (opcional)
 
