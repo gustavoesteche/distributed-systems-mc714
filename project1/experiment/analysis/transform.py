@@ -8,7 +8,7 @@ import pandas as pd
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Compute X, ER, EN and utilization from an experiment CSV."
+        description="Compute X, ER, EN, ETa and utilization from an experiment CSV."
     )
     parser.add_argument(
         "--filepath",
@@ -77,6 +77,13 @@ X = completed.sum() / obs_len
 # Average request time
 er = data.loc[completed, 'total_time'].mean()
 
+# Average time waiting in queue before being processed
+started_after_warmup = data['start_time'] > ts
+etq = (
+    data.loc[started_after_warmup, 'total_time']
+    - data.loc[started_after_warmup, 'machine_time']
+).mean()
+
 # Find the average requests inside the server
 overlap = np.maximum(0.0, np.minimum(data['final_time'].to_numpy(), tf) - np.maximum(data['start_time'].to_numpy(), ts))
 en = overlap.sum() / obs_len
@@ -101,5 +108,5 @@ file_exists = os.path.isfile(save_path)
 with open(save_path, "a", newline="") as f:
     writer = csv.writer(f)
     if not file_exists:
-        writer.writerow(["X", "ER", "EN", "U1", "U2", "U3", "lambda", "mu"])
-    writer.writerow([X, er, en, ui[1], ui[2], ui[3], lambda_, mu])
+        writer.writerow(["X", "ER", "EN", "ETq", "U1", "U2", "U3", "lambda", "mu"])
+    writer.writerow([X, er, en, etq, ui[1], ui[2], ui[3], lambda_, mu])
