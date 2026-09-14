@@ -8,7 +8,7 @@ import pandas as pd
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Compute X, ER, EN, ETa and utilization from an experiment CSV."
+        description="Compute X, ER, EN, ETq and utilization from an experiment CSV."
     )
     parser.add_argument(
         "--filepath",
