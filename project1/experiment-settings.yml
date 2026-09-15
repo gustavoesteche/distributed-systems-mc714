@@ -4,11 +4,11 @@ x-settings: &settings
   MU_2: 1
   MU_3: 1
   SEED: 40
-  LAMBDA: 1.2
-  DURATION: 500
+  LAMBDA: 1.8
+  DURATION: 5000
   # Can be random, round-robin, shortest-queue or all.
   # The last one runs all the methods experiments sequentially
-  STRATEGY: "random"
+  STRATEGY: "all"
 
 services:
   api:
@@ -25,7 +25,7 @@ services:
 
   load-balancer-random:
     environment:
-      EXPERIMENT_SEED: 2
+      EXPERIMENT_SEED: 4
 
   load-balancer-shortest-queue:
     environment:
