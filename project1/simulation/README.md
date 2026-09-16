@@ -10,6 +10,8 @@
 - desempate aleatório entre servidores com a menor fila;
 - 5000 unidades simuladas por execução e warm-up de 500 por padrão;
 - 10 sementes por configuração e intervalo de confiança de 95% de Student;
+- semente-base nova a cada execução (impressa no início); use `-seed <valor>`
+  para reproduzir uma execução anterior;
 - lambdas `0.6, 1.2, 1.8, 2.4, 2.7` e o caso instável `3.3`.
 
 `N1`, `N2` e `N3` incluem a requisição em serviço. `Q1`, `Q2` e `Q3`
@@ -22,12 +24,15 @@ cd project1/simulation
 go test ./...
 go run .
 python3 -m pip install -r requirements.txt
+python3 confidence.py
 python3 plot.py
 ```
 
 O comando padrão executa todas as 18 configurações (seis taxas e três
 políticas), com dez repetições cada. Como o tempo é apenas simulado, a
-execução termina sem esperar as 5000 unidades no relógio real.
+execução termina sem esperar as 5000 unidades no relógio real. 
+
+Ou pode rodar apenas um comando, `run.sh`
 
 Exemplo com uma única política:
 
@@ -36,6 +41,14 @@ go run . \
   -strategy shortest-queue \
   -lambdas 0.6,1.2,1.8,2.4,2.7,3.3 \
   -mu 1 -duration 5000 -warmup 500 -runs 10
+```
+
+Cada execução sorteia uma semente-base diferente e a imprime na saída.
+Para repetir exatamente os mesmos números (por exemplo, os do relatório),
+fixe a semente:
+
+```bash
+go run . -seed 714
 ```
 
 Para configurar taxas diferentes por servidor:
@@ -60,6 +73,10 @@ Os arquivos são recriados em `out/` a cada execução:
   `results_shortest_queue.csv`: médias com apenas
   `X,ER,EN,ETq,U1,U2,U3,lambda,mu`;
 - `queue_trace.csv`: tamanhos das filas ao longo do tempo para `lambda=3.3`.
+
+O `confidence.py` lê `runs.csv` e escreve `results_ci.csv` com a média e o
+intervalo de confiança de 95% (t de Student) de cada métrica por política e
+`lambda`, calculados sobre as 10 réplicas.
 
 O simulador Go produz apenas os CSVs. O `plot.py` lê esses arquivos e gera:
 

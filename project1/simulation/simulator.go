@@ -7,6 +7,10 @@ import (
 	"math/rand"
 )
 
+// The simulator advances an event-driven clock over two event types:
+// Poisson arrivals routed by the balancer and service completions.
+// Time is purely simulated, so a run never waits on the wall clock.
+
 const serverCount = 3
 
 type Strategy string
@@ -46,6 +50,8 @@ type TracePoint struct {
 	Number [serverCount]int
 }
 
+// completion is a scheduled service-completion event. The sequence number
+// makes the heap order deterministic when two events share the same time.
 type completion struct {
 	time        float64
 	server      int
@@ -82,6 +88,8 @@ func (h *completionHeap) Pop() any {
 type simulator struct {
 	cfg SimulationConfig
 
+	// Independent RNG streams keep arrivals, routing, and each server's
+	// service times reproducible even when the policy changes.
 	arrivalRNG  *rand.Rand
 	balancerRNG *rand.Rand
 	serviceRNG  [serverCount]*rand.Rand
@@ -160,6 +168,7 @@ func newSimulator(cfg SimulationConfig) *simulator {
 	return s
 }
 
+// run processes events in chronological order until the configured duration.
 func (s *simulator) run() {
 	for {
 		nextCompletion := math.Inf(1)
@@ -186,6 +195,9 @@ func (s *simulator) run() {
 	}
 }
 
+// advanceTo moves the clock to target while accumulating the time-weighted
+// metrics (area under N(t) and busy time) restricted to the measurement
+// window after the warm-up, and emits queue-trace samples when enabled.
 func (s *simulator) advanceTo(target float64) {
 	if target < s.now {
 		panic("simulation clock moved backwards")
@@ -222,6 +234,9 @@ func (s *simulator) advanceTo(target float64) {
 	s.now = target
 }
 
+// acceptRequest routes an arrival and schedules its completion. Because each
+// server is FCFS with a single thread, the service can only start once the
+// server finishes everything already assigned to it (availableAt).
 func (s *simulator) acceptRequest() {
 	server := s.selectServer()
 	serviceTime := exponential(s.serviceRNG[server], s.cfg.ServiceRates[server])
@@ -243,6 +258,8 @@ func (s *simulator) acceptRequest() {
 	s.arrivals++
 }
 
+// completeRequest removes a finished request and records its response and
+// waiting times, but only for completions inside the measurement window.
 func (s *simulator) completeRequest(event completion) {
 	s.number[event.server]--
 	if s.number[event.server] < 0 {
@@ -257,6 +274,8 @@ func (s *simulator) completeRequest(event completion) {
 	}
 }
 
+// selectServer applies the configured balancing policy. Shortest-queue
+// compares the number in system (queue + in service) and breaks ties randomly.
 func (s *simulator) selectServer() int {
 	switch s.cfg.Strategy {
 	case StrategyRandom:
@@ -286,6 +305,9 @@ func (s *simulator) selectServer() int {
 	}
 }
 
+// result converts the accumulated counters into the metrics required by the
+// assignment: X, E[R], E[N], E[Tq], and per-server utilization, all measured
+// over the post-warm-up window.
 func (s *simulator) result() SimulationResult {
 	observationTime := s.cfg.Duration - s.cfg.Warmup
 	result := SimulationResult{
@@ -318,10 +340,13 @@ func totalNumber(number [serverCount]int) int {
 	return total
 }
 
+// exponential samples an exponential variate via inverse-transform sampling.
 func exponential(rng *rand.Rand, rate float64) float64 {
 	return -math.Log1p(-rng.Float64()) / rate
 }
 
+// newStream derives an independent RNG per role (arrivals, balancer, each
+// server) from one seed, using a SplitMix64-style mix to decorrelate them.
 func newStream(seed int64, stream uint64) *rand.Rand {
 	value := uint64(seed) + 0x9e3779b97f4a7c15*(stream+1)
 	value = (value ^ (value >> 30)) * 0xbf58476d1ce4e5b9

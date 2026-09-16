@@ -1,6 +1,8 @@
 package main
 
 import (
+	cryptorand "crypto/rand"
+	"encoding/binary"
 	"encoding/csv"
 	"errors"
 	"flag"
@@ -13,6 +15,8 @@ import (
 	"strings"
 )
 
+// runRecord pairs one replication's configuration with its metrics so the
+// CSV writers and the aggregation step share the same data.
 type runRecord struct {
 	Run    int
 	Seed   int64
@@ -35,7 +39,7 @@ func main() {
 	duration := flag.Float64("duration", 5000, "simulated duration of each run")
 	warmup := flag.Float64("warmup", 500, "simulated warm-up period to discard")
 	runs := flag.Int("runs", 10, "independent replications per configuration")
-	seed := flag.Int64("seed", 714, "base random seed")
+	seed := flag.Int64("seed", 0, "base random seed; 0 draws a fresh seed each execution")
 	outputDir := flag.String("output", "out", "directory for CSV results")
 	traceLambda := flag.Float64("trace-lambda", 3.3, "lambda for the queue-size trace")
 	traceInterval := flag.Float64("trace-interval", 1, "simulated time between queue trace samples; zero disables it")
@@ -72,6 +76,8 @@ type executionConfig struct {
 	traceInterval float64
 }
 
+// execute runs every (lambda, strategy) configuration for the requested
+// number of replications and writes the per-run, summary, and trace CSVs.
 func execute(cfg executionConfig) error {
 	strategies, err := parseStrategies(cfg.strategy)
 	if err != nil {
@@ -93,6 +99,13 @@ func execute(cfg executionConfig) error {
 	}
 	if cfg.outputDir == "" {
 		return errors.New("output directory cannot be empty")
+	}
+	// Seed 0 means "not pinned": draw a fresh seed so consecutive executions
+	// produce different samples. The seed is logged (and stored per run in
+	// runs.csv) so any execution can still be reproduced with -seed.
+	if cfg.seed == 0 {
+		cfg.seed = freshSeed()
+		log.Printf("base seed: %d (rerun with -seed %d to reproduce)", cfg.seed, cfg.seed)
 	}
 	if err := os.MkdirAll(cfg.outputDir, 0o755); err != nil {
 		return fmt.Errorf("create output directory: %w", err)
@@ -293,6 +306,8 @@ func writeRun(writer *csv.Writer, record runRecord) error {
 	return nil
 }
 
+// littleLawGap measures |E[N] - X*E[R]|, which should be close to zero when
+// Little's Law holds for the run.
 func littleLawGap(result SimulationResult) float64 {
 	return math.Abs(result.MeanNumber - result.Throughput*result.MeanResponse)
 }
@@ -322,6 +337,8 @@ func writeTrace(writer *csv.Writer, record runRecord, trace []TracePoint) error 
 	return nil
 }
 
+// queueLength converts number-in-system into waiting requests only: one
+// request is in service whenever the server is non-empty.
 func queueLength(number int) int {
 	if number == 0 {
 		return 0
@@ -329,6 +346,9 @@ func queueLength(number int) int {
 	return number - 1
 }
 
+// writeSummaries writes one results_<strategy>.csv per policy with the mean
+// of each metric across replications. The 95% confidence intervals are
+// computed from runs.csv by confidence.py.
 func writeSummaries(
 	outputDir string,
 	strategies []Strategy,
@@ -405,6 +425,21 @@ func resultMean(records []runRecord, selectMetric func(SimulationResult) float64
 	return total / float64(count)
 }
 
+// freshSeed returns a non-zero seed from the operating system's entropy pool.
+func freshSeed() int64 {
+	var buffer [8]byte
+	if _, err := cryptorand.Read(buffer[:]); err != nil {
+		log.Fatalf("read random seed: %v", err)
+	}
+	seed := int64(binary.LittleEndian.Uint64(buffer[:]))
+	if seed == 0 {
+		seed = 714
+	}
+	return seed
+}
+
+// deriveRunSeed mixes the base seed with the configuration indices so every
+// replication gets a distinct but reproducible seed.
 func deriveRunSeed(base int64, lambdaIndex, run int) int64 {
 	value := uint64(base) + uint64(lambdaIndex+1)*0x9e3779b97f4a7c15 + uint64(run)*0xbf58476d1ce4e5b9
 	value = (value ^ (value >> 30)) * 0xbf58476d1ce4e5b9
