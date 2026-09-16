@@ -2,9 +2,10 @@
 
 import argparse
 import csv
-import math
 from collections import defaultdict
 from pathlib import Path
+
+from confidence import mean_ci95
 
 import matplotlib
 
@@ -53,48 +54,6 @@ def parse_service_rates(value):
     if len(rates) != 3:
         raise ValueError(f"expected one or three service rates, got {value!r}")
     return rates
-
-
-def mean_ci95(values):
-    mean = sum(values) / len(values)
-    if len(values) == 1:
-        return mean, 0.0
-
-    variance = sum((value - mean) ** 2 for value in values) / (len(values) - 1)
-    standard_error = math.sqrt(variance / len(values))
-    t_critical = {
-        1: 12.706,
-        2: 4.303,
-        3: 3.182,
-        4: 2.776,
-        5: 2.571,
-        6: 2.447,
-        7: 2.365,
-        8: 2.306,
-        9: 2.262,
-        10: 2.228,
-        11: 2.201,
-        12: 2.179,
-        13: 2.160,
-        14: 2.145,
-        15: 2.131,
-        16: 2.120,
-        17: 2.110,
-        18: 2.101,
-        19: 2.093,
-        20: 2.086,
-        21: 2.080,
-        22: 2.074,
-        23: 2.069,
-        24: 2.064,
-        25: 2.060,
-        26: 2.056,
-        27: 2.052,
-        28: 2.048,
-        29: 2.045,
-        30: 2.042,
-    }.get(len(values) - 1, 1.96)
-    return mean, t_critical * standard_error
 
 
 def plot_response_time(run_rows, output_dir):
