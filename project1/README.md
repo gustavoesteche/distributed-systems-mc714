@@ -97,3 +97,19 @@ Depois, requisições:
 - Round Robin: `curl http://localhost:8080/ping`
 - Random: `curl http://localhost:8081/ping`
 - Shortest Queue: `curl http://localhost:8082/ping`
+
+## Simulação teórica (sem Docker e sem espera real)
+
+A implementação de eventos discretos em Go está em `simulation/`. Ela segue
+o modelo do enunciado e avança um relógio virtual, sem usar `sleep`:
+
+```bash
+cd simulation
+go test ./...
+go run .
+python3 -m pip install -r requirements.txt
+python3 plot.py
+```
+
+O simulador é Go; os gráficos são gerados pelo script Python a partir dos
+CSVs. Consulte `simulation/README.md` para as opções e saídas.
