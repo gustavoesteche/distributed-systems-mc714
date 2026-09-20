@@ -13,11 +13,17 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-STRATEGIES = ("random", "round-robin", "shortest-queue")
+STRATEGIES = (
+    "random",
+    "round-robin",
+    "shortest-queue",
+    "weighted-shortest-queue",
+)
 COLORS = {
     "random": "#d62728",
     "round-robin": "#1f77b4",
     "shortest-queue": "#2ca02c",
+    "weighted-shortest-queue": "#9467bd",
 }
 
 
@@ -27,14 +33,21 @@ def parse_args():
     )
     parser.add_argument(
         "--input-dir",
+        "--name",
+        dest="input_dir",
         type=Path,
         default=Path("out"),
-        help="Directory containing runs.csv and queue_trace.csv.",
+        help="Results folder containing runs.csv and queue_trace.csv.",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
         help="Plot destination; defaults to --input-dir.",
+    )
+    parser.add_argument(
+        "--no-analytical",
+        action="store_true",
+        help="Omit the analytical random-policy curve (Analítico aleatória).",
     )
     return parser.parse_args()
 
@@ -56,39 +69,47 @@ def parse_service_rates(value):
     return rates
 
 
-def plot_response_time(run_rows, output_dir):
-    stable_rows = [
+def system_is_stable(row):
+    """Drop only the globally unstable case, λ >= sum(μ)."""
+    return float(row["lambda"]) < sum(parse_service_rates(row["mu"]))
+
+
+def plot_response_time(run_rows, output_dir, show_analytical=True):
+    plotted_rows = [
         row
         for row in run_rows
-        if float(row["lambda"]) / 3 < min(parse_service_rates(row["mu"]))
+        if row.get("ER") not in (None, "") and system_is_stable(row)
     ]
-    if not stable_rows:
-        print("response-time plot skipped: no stable configuration")
+    if not plotted_rows:
+        print("response-time plot skipped: no response-time samples")
         return
 
-    service_rates = parse_service_rates(stable_rows[0]["mu"])
-    max_lambda = max(float(row["lambda"]) for row in stable_rows)
+    service_rates = parse_service_rates(plotted_rows[0]["mu"])
+    max_lambda = max(float(row["lambda"]) for row in plotted_rows)
 
     figure, axis = plt.subplots(figsize=(9, 6))
 
-    analytical_lambdas = [
-        max_lambda * index / 300
-        for index in range(301)
-    ]
-    analytical_response = [
-        sum(1 / (rate - lambda_ / 3) for rate in service_rates) / 3
-        for lambda_ in analytical_lambdas
-    ]
-    axis.plot(
-        analytical_lambdas,
-        analytical_response,
-        color="#111111",
-        linewidth=2,
-        label="Analítico (aleatória)",
-    )
+    if show_analytical:
+        equal_split_limit = 3 * min(service_rates)
+        analytical_limit = min(max_lambda, equal_split_limit * 0.999)
+        analytical_lambdas = [
+            analytical_limit * index / 300
+            for index in range(301)
+        ]
+        analytical_response = [
+            sum(1 / (rate - lambda_ / 3) for rate in service_rates) / 3
+            for lambda_ in analytical_lambdas
+        ]
+        axis.plot(
+            analytical_lambdas,
+            analytical_response,
+            color="#111111",
+            linewidth=2,
+            label="Analítico (aleatória)",
+        )
 
     grouped = defaultdict(lambda: defaultdict(list))
-    for row in stable_rows:
+    for row in plotted_rows:
         grouped[row["strategy"]][float(row["lambda"])].append(float(row["ER"]))
 
     for strategy in STRATEGIES:
@@ -109,14 +130,19 @@ def plot_response_time(run_rows, output_dir):
             label=f"{strategy} simulado",
         )
 
+    title = (
+        "Tempo médio de resposta: modelo analítico e simulação"
+        if show_analytical
+        else "Tempo médio de resposta: simulação"
+    )
     axis.set(
-        title="Tempo médio de resposta: modelo analítico e simulação",
+        title=title,
         xlabel=r"Taxa de chegada $\lambda$",
         ylabel=r"$E[R]$",
         xlim=(0, max_lambda * 1.03),
-        ylim=(0, None),
+        yscale="log",
     )
-    axis.grid(alpha=0.25)
+    axis.grid(alpha=0.25, which="both")
     axis.legend()
     figure.tight_layout()
 
@@ -195,7 +221,11 @@ def main():
 
     run_rows = read_csv(args.input_dir / "runs.csv")
     trace_rows = read_csv(args.input_dir / "queue_trace.csv")
-    plot_response_time(run_rows, output_dir)
+    plot_response_time(
+        run_rows,
+        output_dir,
+        show_analytical=not args.no_analytical,
+    )
     plot_unstable_queues(trace_rows, output_dir)
 
 

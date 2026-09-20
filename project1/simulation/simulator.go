@@ -16,9 +16,10 @@ const serverCount = 3
 type Strategy string
 
 const (
-	StrategyRandom        Strategy = "random"
-	StrategyRoundRobin    Strategy = "round-robin"
-	StrategyShortestQueue Strategy = "shortest-queue"
+	StrategyRandom                Strategy = "random"
+	StrategyRoundRobin            Strategy = "round-robin"
+	StrategyShortestQueue         Strategy = "shortest-queue"
+	StrategyWeightedShortestQueue Strategy = "weighted-shortest-queue"
 )
 
 type SimulationConfig struct {
@@ -144,7 +145,7 @@ func validateConfig(cfg SimulationConfig) error {
 		return fmt.Errorf("trace interval cannot be negative")
 	}
 	switch cfg.Strategy {
-	case StrategyRandom, StrategyRoundRobin, StrategyShortestQueue:
+	case StrategyRandom, StrategyRoundRobin, StrategyShortestQueue, StrategyWeightedShortestQueue:
 		return nil
 	default:
 		return fmt.Errorf("unsupported strategy %q", cfg.Strategy)
@@ -276,6 +277,8 @@ func (s *simulator) completeRequest(event completion) {
 
 // selectServer applies the configured balancing policy. Shortest-queue
 // compares the number in system (queue + in service) and breaks ties randomly.
+// Weighted shortest-queue compares N_i/μ_i so a faster server can keep
+// receiving work even when it already has more requests than a slower one.
 func (s *simulator) selectServer() int {
 	switch s.cfg.Strategy {
 	case StrategyRandom:
@@ -285,24 +288,37 @@ func (s *simulator) selectServer() int {
 		s.roundRobinIndex = (s.roundRobinIndex + 1) % serverCount
 		return selected
 	case StrategyShortestQueue:
-		minimum := s.number[0]
-		candidates := [serverCount]int{0}
-		count := 1
-		for i := 1; i < serverCount; i++ {
-			switch {
-			case s.number[i] < minimum:
-				minimum = s.number[i]
-				candidates[0] = i
-				count = 1
-			case s.number[i] == minimum:
-				candidates[count] = i
-				count++
-			}
-		}
-		return candidates[s.balancerRNG.Intn(count)]
+		return s.selectMinScore(func(server int) float64 {
+			return float64(s.number[server])
+		})
+	case StrategyWeightedShortestQueue:
+		return s.selectMinScore(func(server int) float64 {
+			return float64(s.number[server]) / s.cfg.ServiceRates[server]
+		})
 	default:
 		panic("validated strategy became invalid")
 	}
+}
+
+// selectMinScore returns a server with the smallest score, breaking ties
+// uniformly at random among the current minima.
+func (s *simulator) selectMinScore(score func(int) float64) int {
+	best := score(0)
+	candidates := [serverCount]int{0}
+	count := 1
+	for i := 1; i < serverCount; i++ {
+		value := score(i)
+		switch {
+		case value < best:
+			best = value
+			candidates[0] = i
+			count = 1
+		case value == best:
+			candidates[count] = i
+			count++
+		}
+	}
+	return candidates[s.balancerRNG.Intn(count)]
 }
 
 // result converts the accumulated counters into the metrics required by the

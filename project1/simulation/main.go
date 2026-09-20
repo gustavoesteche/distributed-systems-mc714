@@ -32,54 +32,60 @@ type aggregateKey struct {
 func main() {
 	log.SetFlags(0)
 
-	strategyFlag := flag.String("strategy", "all", "random, round-robin, shortest-queue, or all")
+	strategyFlag := flag.String("strategy", "all", "random, round-robin, shortest-queue, weighted-shortest-queue, or all")
 	lambdaFlag := flag.String("lambdas", "0.6,1.2,1.8,2.4,2.7,3.3", "comma-separated arrival rates")
 	mu := flag.Float64("mu", 1, "service rate used by all servers")
 	mus := flag.String("mus", "", "optional service rates mu1,mu2,mu3; overrides -mu")
+	weightedShortestQueue := flag.Bool("weighted-shortest-queue", false, "also simulate shortest-queue weighted by 1/mu; faster servers keep receiving work even when fuller")
 	duration := flag.Float64("duration", 5000, "simulated duration of each run")
 	warmup := flag.Float64("warmup", 500, "simulated warm-up period to discard")
 	runs := flag.Int("runs", 10, "independent replications per configuration")
 	seed := flag.Int64("seed", 0, "base random seed; 0 draws a fresh seed each execution")
 	outputDir := flag.String("output", "out", "directory for CSV results")
+	name := flag.String("name", "", "name of the results folder; overrides -output")
 	traceLambda := flag.Float64("trace-lambda", 3.3, "lambda for the queue-size trace")
 	traceInterval := flag.Float64("trace-interval", 1, "simulated time between queue trace samples; zero disables it")
 	flag.Parse()
 
 	if err := execute(executionConfig{
-		strategy:      *strategyFlag,
-		lambdas:       *lambdaFlag,
-		mu:            *mu,
-		mus:           *mus,
-		duration:      *duration,
-		warmup:        *warmup,
-		runs:          *runs,
-		seed:          *seed,
-		outputDir:     *outputDir,
-		traceLambda:   *traceLambda,
-		traceInterval: *traceInterval,
+		strategy:              *strategyFlag,
+		lambdas:               *lambdaFlag,
+		mu:                    *mu,
+		mus:                   *mus,
+		weightedShortestQueue: *weightedShortestQueue,
+		duration:              *duration,
+		warmup:                *warmup,
+		runs:                  *runs,
+		seed:                  *seed,
+		outputDir:             *outputDir,
+		name:                  *name,
+		traceLambda:           *traceLambda,
+		traceInterval:         *traceInterval,
 	}); err != nil {
 		log.Fatal(err)
 	}
 }
 
 type executionConfig struct {
-	strategy      string
-	lambdas       string
-	mu            float64
-	mus           string
-	duration      float64
-	warmup        float64
-	runs          int
-	seed          int64
-	outputDir     string
-	traceLambda   float64
-	traceInterval float64
+	strategy              string
+	lambdas               string
+	mu                    float64
+	mus                   string
+	weightedShortestQueue bool
+	duration              float64
+	warmup                float64
+	runs                  int
+	seed                  int64
+	outputDir             string
+	name                  string
+	traceLambda           float64
+	traceInterval         float64
 }
 
 // execute runs every (lambda, strategy) configuration for the requested
 // number of replications and writes the per-run, summary, and trace CSVs.
 func execute(cfg executionConfig) error {
-	strategies, err := parseStrategies(cfg.strategy)
+	strategies, err := parseStrategies(cfg.strategy, cfg.weightedShortestQueue)
 	if err != nil {
 		return err
 	}
@@ -97,9 +103,11 @@ func execute(cfg executionConfig) error {
 	if cfg.traceInterval < 0 {
 		return errors.New("trace interval cannot be negative")
 	}
-	if cfg.outputDir == "" {
-		return errors.New("output directory cannot be empty")
+	outputDir, err := resolveOutputDir(cfg.outputDir, cfg.name)
+	if err != nil {
+		return err
 	}
+	cfg.outputDir = outputDir
 	// Seed 0 means "not pinned": draw a fresh seed so consecutive executions
 	// produce different samples. The seed is logged (and stored per run in
 	// runs.csv) so any execution can still be reproduced with -seed.
@@ -205,17 +213,50 @@ func execute(cfg executionConfig) error {
 	return nil
 }
 
-func parseStrategies(value string) ([]Strategy, error) {
+func parseStrategies(value string, includeWeighted bool) ([]Strategy, error) {
+	var strategies []Strategy
 	if value == "all" {
-		return []Strategy{StrategyRandom, StrategyRoundRobin, StrategyShortestQueue}, nil
+		strategies = []Strategy{StrategyRandom, StrategyRoundRobin, StrategyShortestQueue}
+	} else {
+		strategy := Strategy(value)
+		if !validStrategy(strategy) {
+			return nil, fmt.Errorf("invalid strategy %q", value)
+		}
+		strategies = []Strategy{strategy}
 	}
-	strategy := Strategy(value)
+	if includeWeighted && !containsStrategy(strategies, StrategyWeightedShortestQueue) {
+		strategies = append(strategies, StrategyWeightedShortestQueue)
+	}
+	return strategies, nil
+}
+
+func validStrategy(strategy Strategy) bool {
 	switch strategy {
-	case StrategyRandom, StrategyRoundRobin, StrategyShortestQueue:
-		return []Strategy{strategy}, nil
+	case StrategyRandom, StrategyRoundRobin, StrategyShortestQueue, StrategyWeightedShortestQueue:
+		return true
 	default:
-		return nil, fmt.Errorf("invalid strategy %q", value)
+		return false
 	}
+}
+
+func containsStrategy(strategies []Strategy, target Strategy) bool {
+	for _, strategy := range strategies {
+		if strategy == target {
+			return true
+		}
+	}
+	return false
+}
+
+func resolveOutputDir(output, name string) (string, error) {
+	resolved := strings.TrimSpace(output)
+	if trimmedName := strings.TrimSpace(name); trimmedName != "" {
+		resolved = trimmedName
+	}
+	if resolved == "" {
+		return "", errors.New("output directory cannot be empty")
+	}
+	return resolved, nil
 }
 
 func parseLambdas(value string) ([]float64, error) {
