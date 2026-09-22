@@ -5,9 +5,30 @@ Lucas Pimentel - 252615
 
 ## Como rodar (passo a passo)
 
-Os comandos abaixo devem ser executados a partir da pasta `project1`.
+Os comandos abaixo devem ser executados a partir da raiz pasta `projeto1`. 
 
-### 1. Instalar o Docker
+### Simulação teórica
+
+A implementação de eventos discretos em Go está em `simulation/`. Ela segue
+o modelo do enunciado e avança um relógio virtual, sem usar `sleep`:
+
+```bash
+cd simulation
+go test ./...
+go run .
+python3 -m pip install -r requirements.txt
+python3 plot.py
+```
+
+O simulador é Go; os gráficos são gerados pelo script Python a partir dos
+CSVs. Consulte `simulation/README.md` para as opções de customização e saídas.
+
+
+### Simulação de Verdade (Extra)
+
+Fizemos uma simulação de verdade, com um contâiner para o load-balancer e um para cada worker, que está na pasta `real_experiment`
+
+#### 1. Instalar o Docker
 
 Instale o Docker e Docker Compose. Confirme com:
 
@@ -15,7 +36,7 @@ Instale o Docker e Docker Compose. Confirme com:
 docker compose version
 ```
 
-### 2. Ajustar os parâmetros do experimento
+#### 2. Ajustar os parâmetros do experimento
 
 Edite o arquivo `experiment-settings.yml`:
 
@@ -26,7 +47,7 @@ Edite o arquivo `experiment-settings.yml`:
 - `SEED`: semente das APIs
 - `STRATEGY`: `random`, `round-robin`, `shortest-queue` ou `all`
 
-### 3. Subir o sistema e rodar o experimento
+#### 3. Subir o sistema e rodar o experimento
 
 ```bash
 chmod +x run.sh
@@ -47,7 +68,7 @@ Para parar os serviços depois:
 docker compose -f docker-compose.yml -f experiment-settings.yml down
 ```
 
-### 4. Ver logs dos load balancers (se não usou o `run.sh`)
+#### 4. Ver logs dos load balancers (se não usou o `run.sh`)
 
 Os encaminhamentos **não** aparecem no log do experimento. Eles são impressos no container de cada load balancer.
 
@@ -70,7 +91,7 @@ Você deve ver linhas no formato:
 load-balancer-random  | forwarding POST /process to http://project1-api-1:8080
 ```
 
-### 5. Processar os resultados
+#### 5. Processar os resultados
 
 Na pasta `project1`, com as dependências de `experiment/analysis/requirements.txt` instaladas:
 
@@ -86,7 +107,7 @@ python experiment/analysis/transform.py \
 
 `--warmup-time` ignora os primeiros segundos do experimento ao calcular as métricas. O script acrescenta uma linha em `experiment/processed_data/results.csv` com `X`, `ER`, `EN`, `ETq`, `U1`, `U2`, `U3`, `lambda` e `mu`.
 
-### Teste manual (opcional)
+#### Teste manual (opcional)
 
 ```bash
 docker compose -f docker-compose.yml -f experiment-settings.yml up --build -d
@@ -97,19 +118,3 @@ Depois, requisições:
 - Round Robin: `curl http://localhost:8080/ping`
 - Random: `curl http://localhost:8081/ping`
 - Shortest Queue: `curl http://localhost:8082/ping`
-
-## Simulação teórica (sem Docker e sem espera real)
-
-A implementação de eventos discretos em Go está em `simulation/`. Ela segue
-o modelo do enunciado e avança um relógio virtual, sem usar `sleep`:
-
-```bash
-cd simulation
-go test ./...
-go run .
-python3 -m pip install -r requirements.txt
-python3 plot.py
-```
-
-O simulador é Go; os gráficos são gerados pelo script Python a partir dos
-CSVs. Consulte `simulation/README.md` para as opções e saídas.

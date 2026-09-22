@@ -44,9 +44,11 @@ def parse_args():
     )
     parser.add_argument(
         "--input-dir",
+        "--name",
+        dest="input_dir",
         type=Path,
         default=Path("out"),
-        help="Directory containing runs.csv.",
+        help="Results folder containing runs.csv.",
     )
     parser.add_argument(
         "--output",
