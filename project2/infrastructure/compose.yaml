@@ -1,0 +1,77 @@
+# Node node-k is published on 127.0.0.1:800k.
+services:
+  node-1:
+    build: .
+    hostname: node-1
+    restart: "no"
+    environment:
+      NODE_ID: "node-1"
+      NODE_COUNT: "4"
+      MAX_NEIGHBORS: "3"
+      EXTRA_EDGES: "0"
+      TOPOLOGY_SEED: "42"
+      GOSSIP_INTERVAL: "${GOSSIP_INTERVAL:-10s}"
+      FAILURE_THRESHOLD: "3"
+      HTTP_TIMEOUT: "2s"
+      LOG_LEVEL: "info"
+    ports:
+      - "127.0.0.1:8001:8080"
+    networks:
+      - gossip-net
+  node-2:
+    build: .
+    hostname: node-2
+    restart: "no"
+    environment:
+      NODE_ID: "node-2"
+      NODE_COUNT: "4"
+      MAX_NEIGHBORS: "3"
+      EXTRA_EDGES: "0"
+      TOPOLOGY_SEED: "42"
+      GOSSIP_INTERVAL: "${GOSSIP_INTERVAL:-10s}"
+      FAILURE_THRESHOLD: "3"
+      HTTP_TIMEOUT: "2s"
+      LOG_LEVEL: "info"
+    ports:
+      - "127.0.0.1:8002:8080"
+    networks:
+      - gossip-net
+  node-3:
+    build: .
+    hostname: node-3
+    restart: "no"
+    environment:
+      NODE_ID: "node-3"
+      NODE_COUNT: "4"
+      MAX_NEIGHBORS: "3"
+      EXTRA_EDGES: "0"
+      TOPOLOGY_SEED: "42"
+      GOSSIP_INTERVAL: "${GOSSIP_INTERVAL:-10s}"
+      FAILURE_THRESHOLD: "3"
+      HTTP_TIMEOUT: "2s"
+      LOG_LEVEL: "info"
+    ports:
+      - "127.0.0.1:8003:8080"
+    networks:
+      - gossip-net
+  node-4:
+    build: .
+    hostname: node-4
+    restart: "no"
+    environment:
+      NODE_ID: "node-4"
+      NODE_COUNT: "4"
+      MAX_NEIGHBORS: "3"
+      EXTRA_EDGES: "0"
+      TOPOLOGY_SEED: "42"
+      GOSSIP_INTERVAL: "${GOSSIP_INTERVAL:-10s}"
+      FAILURE_THRESHOLD: "3"
+      HTTP_TIMEOUT: "2s"
+      LOG_LEVEL: "info"
+    ports:
+      - "127.0.0.1:8004:8080"
+    networks:
+      - gossip-net
+networks:
+  gossip-net:
+    driver: bridge
