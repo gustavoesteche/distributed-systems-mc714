@@ -12,6 +12,7 @@ import (
 
 	"mc714/project2/internal/cart"
 	"mc714/project2/internal/logging"
+	"mc714/project2/internal/metrics"
 )
 
 // ErrForbidden is returned for gossip from a node that is not a neighbor.
@@ -26,6 +27,7 @@ type EngineConfig struct {
 	Interval         time.Duration
 	FailureThreshold int
 	Logger           *slog.Logger
+	Metrics          *metrics.Registry
 }
 
 // PeerResult is the outcome of one exchange in a round.
@@ -54,6 +56,7 @@ type Engine struct {
 	transport Transport
 	interval  time.Duration
 	logger    *slog.Logger
+	metrics   *metrics.Registry
 
 	monMu    sync.Mutex
 	monitors map[string]*Monitor
@@ -78,6 +81,7 @@ func NewEngine(cfg EngineConfig) *Engine {
 		transport: cfg.Transport,
 		interval:  cfg.Interval,
 		logger:    logger,
+		metrics:   cfg.Metrics,
 		monitors:  map[string]*Monitor{},
 	}
 	for _, p := range peers {
@@ -89,6 +93,8 @@ func NewEngine(cfg EngineConfig) *Engine {
 
 // Round runs one push-pull exchange with every neighbor in parallel.
 func (e *Engine) Round(ctx context.Context) []PeerResult {
+	e.metrics.Inc(metrics.GossipRounds)
+	e.metrics.Add(metrics.GossipExchanges, uint64(len(e.peers)))
 	results := make([]PeerResult, len(e.peers))
 	var wg sync.WaitGroup
 	for i, p := range e.peers {
@@ -116,6 +122,7 @@ func (e *Engine) exchange(ctx context.Context, p Peer) PeerResult {
 			return fmt.Errorf("pull: answered by %q, expected %q", resp.Node, p.ID)
 		}
 		res.Pulled = len(resp.Ops)
+		e.metrics.Add(metrics.OpsPulled, uint64(res.Pulled))
 		applied, err := e.replica.Apply(resp.Ops)
 		if err != nil {
 			return fmt.Errorf("apply pulled ops: %w", err)
@@ -131,6 +138,7 @@ func (e *Engine) exchange(ctx context.Context, p Peer) PeerResult {
 			return fmt.Errorf("push: %w", err)
 		}
 		res.Pushed = len(missing)
+		e.metrics.Add(metrics.OpsPushed, uint64(res.Pushed))
 		return nil
 	}()
 
@@ -138,6 +146,7 @@ func (e *Engine) exchange(ctx context.Context, p Peer) PeerResult {
 		return res // shutting down: not the peer's fault
 	}
 	if res.Err != nil {
+		e.metrics.Inc(metrics.GossipExchangesFailed)
 		e.logger.Warn("anti-entropy failed", "event", logging.EventAntiEntropyFailed, "peer", p.ID, "err", res.Err)
 	} else {
 		level := slog.LevelDebug
@@ -159,10 +168,13 @@ func (e *Engine) observe(peer string, ok bool) {
 	e.monMu.Unlock()
 	switch ev {
 	case logging.EventPeerConnected:
+		e.metrics.Inc(metrics.PeerConnected)
 		e.logger.Info("peer connected", "event", ev, "peer", peer)
 	case logging.EventPeerUnreachable:
+		e.metrics.Inc(metrics.PeerUnreachable)
 		e.logger.Warn("peer unreachable", "event", ev, "peer", peer, "failures", failures)
 	case logging.EventPeerReconnected:
+		e.metrics.Inc(metrics.PeerReconnected)
 		e.logger.Info("peer reconnected", "event", ev, "peer", peer)
 	}
 }
@@ -216,6 +228,7 @@ func (e *Engine) HandlePull(ctx context.Context, req PullRequest) (PullResponse,
 	if err := e.checkSender(req.SenderNode); err != nil {
 		return PullResponse{}, err
 	}
+	e.metrics.Inc(metrics.GossipPullServed)
 	ops, clk := e.replica.DeltaAndClock(req.Clock)
 	return PullResponse{Node: e.nodeID, Replica: e.replica.ReplicaID(), Clock: clk, Ops: ops}, nil
 }
@@ -226,6 +239,7 @@ func (e *Engine) HandlePush(ctx context.Context, req PushRequest) (PushResponse,
 	if err := e.checkSender(req.SenderNode); err != nil {
 		return PushResponse{}, err
 	}
+	e.metrics.Inc(metrics.GossipPushServed)
 	res, err := e.replica.Apply(req.Ops)
 	if err != nil {
 		return PushResponse{}, err
