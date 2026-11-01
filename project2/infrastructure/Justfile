@@ -14,3 +14,13 @@ test-race:
     go test -race -count=3 ./...
 e2e:
     go test -tags e2e -count=1 -timeout 10m ./e2e/...
+loadgen:
+    go run ./cmd/loadgen --help
+exp-smoke:
+    python3 experiments/sweep.py --suite smoke
+exp-nodes:
+    python3 experiments/sweep.py --suite nodes
+exp-all:
+    python3 experiments/sweep.py --suite all
+analyze:
+    python3 experiments/analyze.py --results experiments/results --out experiments/analysis
