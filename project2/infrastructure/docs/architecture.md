@@ -11,7 +11,8 @@ Every node is the same static binary (`cmd/node`) in its own container, configur
 | `config` | Reads and validates the environment |
 | `cart` | The replica: ops, units, tombstones, causal delivery (`Apply`), deltas |
 | `replication` | Anti-entropy rounds, neighbor check, peer monitor, `Transport` interface |
-| `transport` | HTTP server (decode → delegate → encode) and the HTTP client |
+| `metrics` | Process-wide counters for operations, gossip traffic and peer transitions |
+| `transport` | HTTP server (decode → delegate → encode), `/debug/metrics`, and the HTTP client |
 | `node` | Wires everything and owns the lifecycle |
 | `logging` | `slog` setup and event names |
 
