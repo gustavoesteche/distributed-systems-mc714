@@ -1,0 +1,16 @@
+build:
+    docker compose build
+up:
+    docker compose up --build -d
+logs:
+    docker compose logs -f
+clean-state:
+    for svc in $(docker compose config --services | sort -V); do curl -s "localhost:$((8000 + ${svc#node-}))/debug/clean-state"; done
+down:
+    docker compose down --remove-orphans
+test:
+    go test ./...
+test-race:
+    go test -race -count=3 ./...
+e2e:
+    go test -tags e2e -count=1 -timeout 10m ./e2e/...

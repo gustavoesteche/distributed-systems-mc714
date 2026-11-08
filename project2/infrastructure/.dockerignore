@@ -1,0 +1,8 @@
+.git
+compose.yaml
+docs
+e2e
+*.md
+Justfile
+Dockerfile
+.dockerignore
