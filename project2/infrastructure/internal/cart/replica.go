@@ -8,6 +8,7 @@ import (
 
 	"mc714/project2/internal/clock"
 	"mc714/project2/internal/logging"
+	"mc714/project2/internal/metrics"
 )
 
 // ApplyResult counts what Apply did with a batch.
@@ -38,6 +39,7 @@ type Replica struct {
 	nodeID    string
 	replicaID string
 	logger    *slog.Logger
+	metrics   *metrics.Registry
 
 	clock         clock.VC
 	log           []Operation                    // applied ops, in delivery order
@@ -67,6 +69,10 @@ func NewReplica(nodeID, replicaID string, logger *slog.Logger) *Replica {
 		lastByProduct: map[string]string{},
 	}
 }
+
+// SetMetrics attaches the process-wide registry. It is called once during
+// wiring, before the node starts serving; a nil registry disables metrics.
+func (r *Replica) SetMetrics(m *metrics.Registry) { r.metrics = m }
 
 // NodeID returns the stable node name.
 func (r *Replica) NodeID() string { return r.nodeID }
@@ -138,6 +144,7 @@ func (r *Replica) Remove(product string, q int) (Operation, error) {
 }
 
 func (r *Replica) logCreated(op Operation) {
+	r.metrics.Inc(metrics.OpsCreated)
 	r.logger.Info("op created", "event", logging.EventOpCreated, "op", op.ID, "type", op.Type,
 		"product", op.ProductID, "quantity", op.Quantity, "now", len(r.live[op.ProductID]))
 }
@@ -164,6 +171,33 @@ func (r *Replica) quantitiesLocked() map[string]int {
 		}
 	}
 	return q
+}
+
+// Stats is the lightweight view used by /debug/metrics. It copies the clock
+// and the quantities but not the operation log.
+type Stats struct {
+	NodeID     string
+	ReplicaID  string
+	Clock      clock.VC
+	Quantities map[string]int
+	Pending    int
+	Applied    int
+	Tombstones int
+}
+
+// Stats returns counters and gauges without copying the operation log.
+func (r *Replica) Stats() Stats {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	return Stats{
+		NodeID:     r.nodeID,
+		ReplicaID:  r.replicaID,
+		Clock:      r.clock.Copy(),
+		Quantities: r.quantitiesLocked(),
+		Pending:    len(r.pending),
+		Applied:    len(r.log),
+		Tombstones: len(r.tombstones),
+	}
 }
 
 // Snapshot returns a deep copy of the whole state.

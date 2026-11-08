@@ -17,6 +17,7 @@ import (
 	"mc714/project2/internal/cart"
 	"mc714/project2/internal/config"
 	"mc714/project2/internal/logging"
+	"mc714/project2/internal/metrics"
 	"mc714/project2/internal/replication"
 	"mc714/project2/internal/topology"
 	"mc714/project2/internal/transport"
@@ -30,6 +31,7 @@ type Node struct {
 	replicaID string
 	replica   *cart.Replica
 	engine    *replication.Engine
+	metrics   *metrics.Registry
 	server    *http.Server
 
 	mu       sync.Mutex
@@ -72,24 +74,32 @@ func New(cfg config.Config, logger *slog.Logger) (*Node, error) {
 	logger.Info("configured neighbors", "event", logging.EventConfiguredNeighbors,
 		"neighbors", "["+strings.Join(neighbors, ",")+"]")
 
-	n := &Node{cfg: cfg, logger: logger, neighbors: neighbors, replicaID: newReplicaID(cfg.NodeID)}
+	n := &Node{cfg: cfg, logger: logger, neighbors: neighbors, replicaID: newReplicaID(cfg.NodeID),
+		metrics: metrics.New()}
 	n.replica = cart.NewReplica(cfg.NodeID, n.replicaID, logger)
+	n.replica.SetMetrics(n.metrics)
 	peers := make([]replication.Peer, len(neighbors))
 	for i, id := range neighbors {
 		peers[i] = replication.Peer{ID: id, URL: cfg.PeerURL(id)}
 	}
+	transportClient := transport.NewHTTPTransport(cfg.HTTPTimeout)
+	transportClient.SetMetrics(n.metrics)
 	n.engine = replication.NewEngine(replication.EngineConfig{
 		NodeID:           cfg.NodeID,
 		Replica:          n.replica,
 		Peers:            peers,
-		Transport:        transport.NewHTTPTransport(cfg.HTTPTimeout),
+		Transport:        transportClient,
 		Interval:         cfg.GossipInterval,
 		FailureThreshold: cfg.FailureThreshold,
 		Logger:           logger,
+		Metrics:          n.metrics,
 	})
 	n.server = &http.Server{
-		Handler:           transport.NewServer(n.replica, n.engine),
+		Handler:           transport.NewServer(n.replica, n.engine, n.metrics),
 		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       120 * time.Second,
 	}
 	return n, nil
 }

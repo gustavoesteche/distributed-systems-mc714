@@ -53,6 +53,7 @@ Received state is only merged through `Apply`, never overwritten.
 | POST | `/internal/gossip/pull` | `{"sender_node","sender_replica","clock"}` → `{"node","replica","clock","ops"}` · 403 |
 | POST | `/internal/gossip/push` | `{"sender_node","sender_replica","ops"}` → `{"applied","duplicates","buffered","rejected"}` · 403 |
 | GET | `/debug/state` | full snapshot plus `neighbors` and `peers` |
+| GET | `/debug/metrics` | counters, `pending_ops`, `applied_ops`, `clock`, `quantities`, `peers` |
 | GET | `/debug/clean-state` | `{"node","items":{"<product>":<qty>}}` |
 
 Bodies are limited to 8 MiB (413) and must be one JSON value with exactly matching keys (400). Errors are `{"error": "..."}`.
@@ -71,6 +72,30 @@ Bodies are limited to 8 MiB (413) and must be one JSON value with exactly matchi
 | `gossip_peer_unreachable` | warn | `FAILURE_THRESHOLD` consecutive failures (logged once) |
 | `concurrent_ops_detected`, `op_rejected` | info, warn | see causal delivery |
 | `configured_neighbors`, `node_started`, `node_stopped`, `node_error` | info / error | lifecycle |
+
+## Experiment metrics
+
+`/debug/metrics` is the lightweight view used by experiment scripts. It
+returns `node`, `replica`, `uptime_seconds`, a `counters` object, the gauges
+`pending_ops`, `applied_ops` and `tombstones`, the vector `clock`, the visible
+`quantities`, and each neighbor's monitor `peers` state.
+
+Counters are cumulative and are reset only by a node restart:
+
+| Counter | Meaning |
+|---|---|
+| `ops_created_total` | local client operations |
+| `ops_applied_total` | operations delivered locally (local and remote) |
+| `ops_duplicated_total`, `ops_buffered_total`, `ops_rejected_total` | `Apply` outcomes |
+| `concurrent_ops_detected_total` | concurrent operations on the same product |
+| `gossip_rounds_total`, `gossip_exchanges_total`, `gossip_exchanges_failed_total` | anti-entropy activity |
+| `ops_pulled_total`, `ops_pushed_total` | operations moved by anti-entropy |
+| `messages_sent_total`, `messages_received_total`, `bytes_sent_total`, `bytes_received_total` | HTTP gossip traffic |
+| `gossip_pull_served_total`, `gossip_push_served_total` | incoming gossip requests answered |
+| `peer_connected_total`, `peer_reconnected_total`, `peer_unreachable_total` | monitor transitions |
+
+Convergence is checked by comparing `clock`, `applied_ops` and `quantities`
+across nodes and requiring `pending_ops == 0` everywhere.
 
 ## Correctness
 

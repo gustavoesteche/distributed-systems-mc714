@@ -12,6 +12,7 @@ import (
 
 	"mc714/project2/internal/cart"
 	"mc714/project2/internal/clock"
+	"mc714/project2/internal/metrics"
 	"mc714/project2/internal/replication"
 	"mc714/project2/internal/testutil"
 )
@@ -26,14 +27,16 @@ type fixture struct {
 func newFixture(t *testing.T) *fixture {
 	t.Helper()
 	logs := testutil.NewLogCapture()
+	reg := metrics.New()
 	rep := cart.NewReplica("node-1", "node-1@1", logs.Logger("node-1"))
+	rep.SetMetrics(reg)
 	eng := replication.NewEngine(replication.EngineConfig{
 		NodeID: "node-1", Replica: rep,
 		Peers:     []replication.Peer{{ID: "node-2", URL: "http://127.0.0.1:1"}},
 		Transport: NewHTTPTransport(time.Second), Interval: time.Hour, FailureThreshold: 3,
-		Logger: logs.Logger("node-1"),
+		Logger: logs.Logger("node-1"), Metrics: reg,
 	})
-	srv := httptest.NewServer(NewServer(rep, eng))
+	srv := httptest.NewServer(NewServer(rep, eng, reg))
 	t.Cleanup(srv.Close)
 	return &fixture{replica: rep, engine: eng, srv: srv}
 }

@@ -5,6 +5,7 @@ import (
 
 	"mc714/project2/internal/clock"
 	"mc714/project2/internal/logging"
+	"mc714/project2/internal/metrics"
 )
 
 // Apply merges received ops. One invalid op rejects the whole batch with no
@@ -39,6 +40,8 @@ func (r *Replica) Apply(ops []Operation) (ApplyResult, error) {
 			res.Buffered++
 		}
 	}
+	r.metrics.Add(metrics.OpsDuplicated, uint64(res.Duplicates))
+	r.metrics.Add(metrics.OpsBuffered, uint64(res.Buffered))
 	return res, nil
 }
 
@@ -91,6 +94,7 @@ func (r *Replica) drain() (applied, rejected int) {
 func (r *Replica) deliver(op Operation) bool {
 	if op.Type == Remove {
 		if reason := r.checkRemove(op); reason != "" {
+			r.metrics.Inc(metrics.OpsRejected)
 			r.logger.Warn("op rejected", "event", logging.EventOpRejected, "op", op.ID, "reason", reason)
 			return false
 		}
@@ -98,8 +102,9 @@ func (r *Replica) deliver(op Operation) bool {
 	if lastID, ok := r.lastByProduct[op.ProductID]; ok {
 		last := r.log[r.opIndex[lastID]]
 		if last.Clock.Compare(op.Clock) == clock.Concurrent {
-			r.logger.Info("concurrent ops detected", "event", logging.EventConcurrentOps,
-				"product", op.ProductID, "op", op.ID, "concurrent_with", last.ID)
+			r.metrics.Inc(metrics.ConcurrentOpsDetected)
+			r.logger.Info("concurrent ops detected", "event", logging.EventConcurrentOps, "product", op.ProductID,
+				"op", op.ID, "concurrent_with", last.ID)
 		}
 	}
 
@@ -130,6 +135,7 @@ func (r *Replica) deliver(op Operation) bool {
 	}
 	r.clock = r.clock.Merge(op.Clock)
 	r.lastByProduct[op.ProductID] = op.ID
+	r.metrics.Inc(metrics.OpsApplied)
 	return true
 }
 

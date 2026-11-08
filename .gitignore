@@ -2,3 +2,7 @@
 volumes/
 dist/
 out/
+__pycache__/
+*.pyc
+.venv/
+project2/infrastructure/experiments/.bin/

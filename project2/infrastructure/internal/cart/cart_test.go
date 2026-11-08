@@ -587,3 +587,27 @@ func TestUnitIDRoundTrip(t *testing.T) {
 		}
 	}
 }
+
+func TestStatsMatchesSnapshotWithoutCopyingLog(t *testing.T) {
+	r, _ := newTestReplica("node-1", "node-1@1")
+	mustAdd(t, r, "apple", 2)
+	mustRemove(t, r, "apple", 1)
+	stats := r.Stats()
+	snap := r.Snapshot()
+	if stats.NodeID != snap.NodeID || stats.ReplicaID != snap.ReplicaID {
+		t.Fatalf("identity: %+v", stats)
+	}
+	if !reflect.DeepEqual(stats.Clock, snap.Clock) {
+		t.Fatalf("clock: %v vs %v", stats.Clock, snap.Clock)
+	}
+	if !reflect.DeepEqual(stats.Quantities, snap.Quantities) {
+		t.Fatalf("quantities: %v vs %v", stats.Quantities, snap.Quantities)
+	}
+	if stats.Pending != len(snap.Pending) || stats.Applied != len(snap.Ops) || stats.Tombstones != len(snap.Tombstones) {
+		t.Fatalf("gauges: %+v vs snapshot %+v", stats, snap)
+	}
+	stats.Clock["mutated"] = 99
+	if _, ok := r.Stats().Clock["mutated"]; ok {
+		t.Fatal("Stats clock aliases replica state")
+	}
+}

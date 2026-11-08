@@ -12,8 +12,11 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"time"
 
 	"mc714/project2/internal/cart"
+	"mc714/project2/internal/clock"
+	"mc714/project2/internal/metrics"
 	"mc714/project2/internal/replication"
 )
 
@@ -23,11 +26,14 @@ const MaxBodyBytes = 8 << 20
 type server struct {
 	replica *cart.Replica
 	engine  *replication.Engine
+	metrics *metrics.Registry
+	started time.Time
 }
 
-// NewServer returns the node's HTTP handler.
-func NewServer(replica *cart.Replica, engine *replication.Engine) http.Handler {
-	s := &server{replica: replica, engine: engine}
+// NewServer returns the node's HTTP handler. Every server is wired to the
+// node's metrics registry; a nil registry serves an empty counters object.
+func NewServer(replica *cart.Replica, engine *replication.Engine, m *metrics.Registry) http.Handler {
+	s := &server{replica: replica, engine: engine, metrics: m, started: time.Now()}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", s.health)
 	mux.HandleFunc("GET /cart", s.cart)
@@ -36,12 +42,13 @@ func NewServer(replica *cart.Replica, engine *replication.Engine) http.Handler {
 	mux.HandleFunc("POST /internal/gossip/pull", s.pull)
 	mux.HandleFunc("POST /internal/gossip/push", s.push)
 	mux.HandleFunc("GET /debug/state", s.debug)
+	mux.HandleFunc("GET /debug/metrics", s.metricsSnapshot)
 	mux.HandleFunc("GET /debug/clean-state", s.cleanState)
 	// Answer wrong methods with JSON instead of the mux's text/plain.
 	for path, allow := range map[string]string{
 		"/health": "GET", "/cart": "GET", "/cart/add": "POST", "/cart/remove": "POST",
 		"/internal/gossip/pull": "POST", "/internal/gossip/push": "POST", "/debug/state": "GET",
-		"/debug/clean-state": "GET",
+		"/debug/metrics": "GET", "/debug/clean-state": "GET",
 	} {
 		mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Allow", allow)
@@ -63,6 +70,21 @@ type debugState struct {
 	cart.Snapshot
 	Neighbors []string                 `json:"neighbors"`
 	Peers     []replication.PeerStatus `json:"peers"`
+}
+
+// metricsResponse is the lightweight view used by experiment scripts. It
+// avoids sending the whole operation log on every convergence poll.
+type metricsResponse struct {
+	Node          string                   `json:"node"`
+	Replica       string                   `json:"replica"`
+	UptimeSeconds float64                  `json:"uptime_seconds"`
+	Counters      map[string]uint64        `json:"counters"`
+	PendingOps    int                      `json:"pending_ops"`
+	AppliedOps    int                      `json:"applied_ops"`
+	Tombstones    int                      `json:"tombstones"`
+	Clock         clock.VC                 `json:"clock"`
+	Quantities    map[string]int           `json:"quantities"`
+	Peers         []replication.PeerStatus `json:"peers"`
 }
 
 func (s *server) health(w http.ResponseWriter, r *http.Request) {
@@ -130,6 +152,24 @@ func (s *server) push(w http.ResponseWriter, r *http.Request) {
 func (s *server) debug(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, debugState{
 		Snapshot: s.replica.Snapshot(), Neighbors: s.engine.Neighbors(), Peers: s.engine.PeerStatuses(),
+	})
+}
+
+// metricsSnapshot reports counters plus the few gauges an experiment needs to
+// decide whether every replica has converged.
+func (s *server) metricsSnapshot(w http.ResponseWriter, r *http.Request) {
+	stats := s.replica.Stats()
+	writeJSON(w, http.StatusOK, metricsResponse{
+		Node:          stats.NodeID,
+		Replica:       stats.ReplicaID,
+		UptimeSeconds: time.Since(s.started).Seconds(),
+		Counters:      s.metrics.Snapshot(),
+		PendingOps:    stats.Pending,
+		AppliedOps:    stats.Applied,
+		Tombstones:    stats.Tombstones,
+		Clock:         stats.Clock,
+		Quantities:    stats.Quantities,
+		Peers:         s.engine.PeerStatuses(),
 	})
 }
 

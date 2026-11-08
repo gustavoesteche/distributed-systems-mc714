@@ -29,7 +29,8 @@ type harness struct {
 func (h *harness) compose(args ...string) (string, error) {
 	full := append([]string{"compose", "-p", project, "-f", h.file, "--project-directory", h.infraDir}, args...)
 	cmd := exec.Command("docker", full...)
-	cmd.Env = append(os.Environ(), "GOSSIP_INTERVAL=1s")
+	// The e2e partition scenario needs the deterministic chain topology.
+	cmd.Env = append(os.Environ(), "GOSSIP_INTERVAL=1s", "EXTRA_EDGES=0")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &out
