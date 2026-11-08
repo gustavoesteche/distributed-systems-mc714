@@ -60,6 +60,8 @@ func TestMetricsEndpoint(t *testing.T) {
 		Counters   map[string]uint64 `json:"counters"`
 		PendingOps int               `json:"pending_ops"`
 		AppliedOps int               `json:"applied_ops"`
+		ClockEnt   int               `json:"clock_entries"`
+		ClockBytes int               `json:"clock_bytes"`
 		Quantities map[string]int    `json:"quantities"`
 		Peers      []struct {
 			ID string `json:"id"`
@@ -76,6 +78,9 @@ func TestMetricsEndpoint(t *testing.T) {
 	}
 	if got.PendingOps != 0 || got.AppliedOps != 1 || got.Quantities["apple"] != 2 {
 		t.Fatalf("gauges: pending=%d applied=%d quantities=%v", got.PendingOps, got.AppliedOps, got.Quantities)
+	}
+	if got.ClockEnt != 1 || got.ClockBytes != len(`{"node-1@1":1}`) {
+		t.Fatalf("clock size: entries=%d bytes=%d", got.ClockEnt, got.ClockBytes)
 	}
 	if len(got.Peers) != 1 || got.Peers[0].ID != "node-2" {
 		t.Fatalf("peers: %+v", got.Peers)

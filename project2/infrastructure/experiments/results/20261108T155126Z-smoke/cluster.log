@@ -1,0 +1,604 @@
+node-1-1  | 2026-11-08T15:51:26.848643472Z time=2026-11-08T15:51:26.848Z level=INFO msg="configured neighbors" node=node-1 event=configured_neighbors neighbors=[node-2,node-4]
+node-1-1  | 2026-11-08T15:51:26.848765449Z time=2026-11-08T15:51:26.848Z level=INFO msg="node started" node=node-1 event=node_started replica=node-1@1794153086848470290 addr=[::]:8080
+node-1-1  | 2026-11-08T15:51:26.868689797Z time=2026-11-08T15:51:26.868Z level=WARN msg="anti-entropy failed" node=node-1 event=anti_entropy_failed peer=node-2 err="pull: Post \"http://node-2:8080/internal/gossip/pull\": dial tcp: lookup node-2 on 127.0.0.11:53: server misbehaving"
+node-1-1  | 2026-11-08T15:51:26.869142136Z time=2026-11-08T15:51:26.869Z level=WARN msg="anti-entropy failed" node=node-1 event=anti_entropy_failed peer=node-4 err="pull: Post \"http://node-4:8080/internal/gossip/pull\": dial tcp: lookup node-4 on 127.0.0.11:53: server misbehaving"
+node-1-1  | 2026-11-08T15:51:27.414094360Z time=2026-11-08T15:51:27.413Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:1 type=ADD product=load-0000 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.415147342Z time=2026-11-08T15:51:27.414Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:2 type=ADD product=load-0001 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.416028030Z time=2026-11-08T15:51:27.415Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:3 type=ADD product=load-0002 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.417034530Z time=2026-11-08T15:51:27.416Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:4 type=ADD product=load-0003 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.418742105Z time=2026-11-08T15:51:27.418Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:5 type=ADD product=load-0004 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.419423344Z time=2026-11-08T15:51:27.419Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:6 type=ADD product=load-0005 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.420475093Z time=2026-11-08T15:51:27.420Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:7 type=ADD product=load-0006 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.421438295Z time=2026-11-08T15:51:27.421Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:8 type=ADD product=load-0007 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.422230333Z time=2026-11-08T15:51:27.422Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:9 type=ADD product=load-0008 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.423066966Z time=2026-11-08T15:51:27.422Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:10 type=ADD product=load-0009 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.423986026Z time=2026-11-08T15:51:27.423Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:11 type=ADD product=load-0010 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.424684046Z time=2026-11-08T15:51:27.424Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:12 type=ADD product=load-0011 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.425397463Z time=2026-11-08T15:51:27.425Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:13 type=ADD product=load-0012 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.426362653Z time=2026-11-08T15:51:27.426Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:14 type=ADD product=load-0013 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.427585710Z time=2026-11-08T15:51:27.427Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:15 type=ADD product=load-0014 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.429485833Z time=2026-11-08T15:51:27.429Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:16 type=ADD product=load-0015 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.430144537Z time=2026-11-08T15:51:27.430Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:17 type=ADD product=load-0016 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.430859631Z time=2026-11-08T15:51:27.430Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:18 type=ADD product=load-0017 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.431464851Z time=2026-11-08T15:51:27.431Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:19 type=ADD product=load-0018 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.432069385Z time=2026-11-08T15:51:27.432Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:20 type=ADD product=load-0019 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.432846186Z time=2026-11-08T15:51:27.432Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:21 type=ADD product=load-0020 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.433465754Z time=2026-11-08T15:51:27.433Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:22 type=ADD product=load-0021 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.434177377Z time=2026-11-08T15:51:27.434Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:23 type=ADD product=load-0022 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.434830454Z time=2026-11-08T15:51:27.434Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:24 type=ADD product=load-0023 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.435509414Z time=2026-11-08T15:51:27.435Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:25 type=ADD product=load-0024 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.436178189Z time=2026-11-08T15:51:27.436Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:26 type=ADD product=load-0025 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.436956793Z time=2026-11-08T15:51:27.436Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:27 type=ADD product=load-0026 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.438686426Z time=2026-11-08T15:51:27.438Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:28 type=ADD product=load-0027 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.442005183Z time=2026-11-08T15:51:27.441Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:29 type=ADD product=load-0028 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.444295605Z time=2026-11-08T15:51:27.444Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:30 type=ADD product=load-0029 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.445365856Z time=2026-11-08T15:51:27.445Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:31 type=ADD product=load-0030 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.446268740Z time=2026-11-08T15:51:27.446Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:32 type=ADD product=load-0031 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.447210506Z time=2026-11-08T15:51:27.447Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:33 type=ADD product=load-0032 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.448126239Z time=2026-11-08T15:51:27.448Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:34 type=ADD product=load-0033 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.449072856Z time=2026-11-08T15:51:27.448Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:35 type=ADD product=load-0034 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.450056299Z time=2026-11-08T15:51:27.449Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:36 type=ADD product=load-0035 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.451131979Z time=2026-11-08T15:51:27.451Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:37 type=ADD product=load-0036 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.452253824Z time=2026-11-08T15:51:27.452Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:38 type=ADD product=load-0037 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.453101851Z time=2026-11-08T15:51:27.453Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:39 type=ADD product=load-0038 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.453998812Z time=2026-11-08T15:51:27.453Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:40 type=ADD product=load-0039 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.455484562Z time=2026-11-08T15:51:27.455Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:41 type=ADD product=load-0040 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.456709393Z time=2026-11-08T15:51:27.456Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:42 type=ADD product=load-0041 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.457647088Z time=2026-11-08T15:51:27.457Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:43 type=ADD product=load-0042 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.458336373Z time=2026-11-08T15:51:27.458Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:44 type=ADD product=load-0043 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.458963306Z time=2026-11-08T15:51:27.458Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:45 type=ADD product=load-0044 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.459597237Z time=2026-11-08T15:51:27.459Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:46 type=ADD product=load-0045 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.460456633Z time=2026-11-08T15:51:27.460Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:47 type=ADD product=load-0046 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.461102461Z time=2026-11-08T15:51:27.461Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:48 type=ADD product=load-0047 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.461830704Z time=2026-11-08T15:51:27.461Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:49 type=ADD product=load-0048 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.462530034Z time=2026-11-08T15:51:27.462Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:50 type=ADD product=load-0049 quantity=1000 now=1000
+node-1-1  | 2026-11-08T15:51:27.880563187Z time=2026-11-08T15:51:27.880Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=50
+node-1-1  | 2026-11-08T15:51:27.880587398Z time=2026-11-08T15:51:27.880Z level=INFO msg="peer connected" node=node-1 event=gossip_peer_connected peer=node-2
+node-1-1  | 2026-11-08T15:51:27.880933968Z time=2026-11-08T15:51:27.880Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=0 pushed=50
+node-1-1  | 2026-11-08T15:51:27.880954372Z time=2026-11-08T15:51:27.880Z level=INFO msg="peer connected" node=node-1 event=gossip_peer_connected peer=node-4
+node-1-1  | 2026-11-08T15:51:32.466903478Z time=2026-11-08T15:51:32.466Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:51 type=ADD product=load-0005 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:32.467196252Z time=2026-11-08T15:51:32.467Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:52 type=ADD product=load-0030 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:32.851636059Z time=2026-11-08T15:51:32.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=2 pushed=2
+node-1-1  | 2026-11-08T15:51:32.851674404Z time=2026-11-08T15:51:32.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=3
+node-1-1  | 2026-11-08T15:51:32.855965887Z time=2026-11-08T15:51:32.855Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:53 type=ADD product=load-0002 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:32.908452571Z time=2026-11-08T15:51:32.908Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:54 type=ADD product=load-0042 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:33.116951098Z time=2026-11-08T15:51:33.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=1
+node-1-1  | 2026-11-08T15:51:33.240912660Z time=2026-11-08T15:51:33.240Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:55 type=ADD product=load-0031 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:33.254922984Z time=2026-11-08T15:51:33.254Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:56 type=REMOVE product=load-0045 quantity=1 now=999
+node-1-1  | 2026-11-08T15:51:33.398575377Z time=2026-11-08T15:51:33.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=2
+node-1-1  | 2026-11-08T15:51:33.851290652Z time=2026-11-08T15:51:33.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=1 pushed=0
+node-1-1  | 2026-11-08T15:51:33.852054060Z time=2026-11-08T15:51:33.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=3 pushed=2
+node-1-1  | 2026-11-08T15:51:33.971997661Z time=2026-11-08T15:51:33.971Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:57 type=ADD product=load-0008 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:34.171180116Z time=2026-11-08T15:51:34.170Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:58 type=ADD product=load-0007 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:34.399383529Z time=2026-11-08T15:51:34.399Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=1
+node-1-1  | 2026-11-08T15:51:34.465275412Z time=2026-11-08T15:51:34.465Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:59 type=ADD product=load-0033 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:34.851800507Z time=2026-11-08T15:51:34.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=5 pushed=1
+node-1-1  | 2026-11-08T15:51:34.851944661Z time=2026-11-08T15:51:34.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=1 pushed=3
+node-1-1  | 2026-11-08T15:51:35.117664745Z time=2026-11-08T15:51:35.117Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=2
+node-1-1  | 2026-11-08T15:51:35.310468581Z time=2026-11-08T15:51:35.310Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:60 type=REMOVE product=load-0023 quantity=1 now=999
+node-1-1  | 2026-11-08T15:51:35.398605214Z time=2026-11-08T15:51:35.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=3
+node-1-1  | 2026-11-08T15:51:35.698759081Z time=2026-11-08T15:51:35.698Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:61 type=REMOVE product=load-0006 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:35.850870721Z time=2026-11-08T15:51:35.850Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0004 op=node-3@1794153086583888145:6 concurrent_with=node-2@1794153087395914662:6
+node-1-1  | 2026-11-08T15:51:35.851527640Z time=2026-11-08T15:51:35.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=1 pushed=1
+node-1-1  | 2026-11-08T15:51:35.851554222Z time=2026-11-08T15:51:35.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=2 pushed=1
+node-1-1  | 2026-11-08T15:51:36.116921488Z time=2026-11-08T15:51:36.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=2
+node-1-1  | 2026-11-08T15:51:36.398553704Z time=2026-11-08T15:51:36.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=1
+node-1-1  | 2026-11-08T15:51:36.849969884Z time=2026-11-08T15:51:36.849Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=1 pushed=0
+node-1-1  | 2026-11-08T15:51:36.850007184Z time=2026-11-08T15:51:36.849Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=4 pushed=0
+node-1-1  | 2026-11-08T15:51:37.116939832Z time=2026-11-08T15:51:37.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=3
+node-1-1  | 2026-11-08T15:51:37.369829470Z time=2026-11-08T15:51:37.369Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:62 type=ADD product=load-0041 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:37.398743101Z time=2026-11-08T15:51:37.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=3
+node-1-1  | 2026-11-08T15:51:37.718026682Z time=2026-11-08T15:51:37.717Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:63 type=ADD product=load-0029 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:37.850392341Z time=2026-11-08T15:51:37.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=2 pushed=1
+node-1-1  | 2026-11-08T15:51:37.850583255Z time=2026-11-08T15:51:37.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=2 pushed=2
+node-1-1  | 2026-11-08T15:51:38.117594331Z time=2026-11-08T15:51:38.117Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=3
+node-1-1  | 2026-11-08T15:51:38.398089092Z time=2026-11-08T15:51:38.397Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=2
+node-1-1  | 2026-11-08T15:51:38.447395569Z time=2026-11-08T15:51:38.447Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:64 type=ADD product=load-0030 quantity=1 now=1003
+node-1-1  | 2026-11-08T15:51:38.845546576Z time=2026-11-08T15:51:38.845Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:65 type=ADD product=load-0032 quantity=1 now=1004
+node-1-1  | 2026-11-08T15:51:38.851398663Z time=2026-11-08T15:51:38.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=1 pushed=2
+node-1-1  | 2026-11-08T15:51:38.851433528Z time=2026-11-08T15:51:38.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=2
+node-1-1  | 2026-11-08T15:51:38.870576516Z time=2026-11-08T15:51:38.870Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:66 type=ADD product=load-0039 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:39.116570169Z time=2026-11-08T15:51:39.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=1
+node-1-1  | 2026-11-08T15:51:39.219871761Z time=2026-11-08T15:51:39.219Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:67 type=ADD product=load-0031 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:39.361847256Z time=2026-11-08T15:51:39.361Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:68 type=ADD product=load-0008 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:39.398773819Z time=2026-11-08T15:51:39.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=1
+node-1-1  | 2026-11-08T15:51:39.850215035Z time=2026-11-08T15:51:39.849Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0011 op=node-3@1794153086583888145:17 concurrent_with=node-2@1794153087395914662:17
+node-1-1  | 2026-11-08T15:51:39.850246395Z time=2026-11-08T15:51:39.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=4 pushed=0
+node-1-1  | 2026-11-08T15:51:39.850275580Z time=2026-11-08T15:51:39.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=2 pushed=0
+node-1-1  | 2026-11-08T15:51:39.996050685Z time=2026-11-08T15:51:39.995Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:69 type=ADD product=load-0005 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:40.117564386Z time=2026-11-08T15:51:40.117Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=3
+node-1-1  | 2026-11-08T15:51:40.397617775Z time=2026-11-08T15:51:40.397Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=2
+node-1-1  | 2026-11-08T15:51:40.410552244Z time=2026-11-08T15:51:40.410Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:70 type=REMOVE product=load-0029 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:40.851225547Z time=2026-11-08T15:51:40.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=2 pushed=1
+node-1-1  | 2026-11-08T15:51:40.851254015Z time=2026-11-08T15:51:40.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=2 pushed=1
+node-1-1  | 2026-11-08T15:51:41.116437119Z time=2026-11-08T15:51:41.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=2
+node-1-1  | 2026-11-08T15:51:41.398575714Z time=2026-11-08T15:51:41.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=2
+node-1-1  | 2026-11-08T15:51:41.849931159Z time=2026-11-08T15:51:41.849Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=5 pushed=0
+node-1-1  | 2026-11-08T15:51:41.850514246Z time=2026-11-08T15:51:41.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=1 pushed=5
+node-1-1  | 2026-11-08T15:51:42.116713133Z time=2026-11-08T15:51:42.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=3
+node-1-1  | 2026-11-08T15:51:42.398868422Z time=2026-11-08T15:51:42.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=3
+node-1-1  | 2026-11-08T15:51:42.850181036Z time=2026-11-08T15:51:42.849Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=4 pushed=0
+node-1-1  | 2026-11-08T15:51:42.850535091Z time=2026-11-08T15:51:42.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=3
+node-1-1  | 2026-11-08T15:51:43.117340110Z time=2026-11-08T15:51:43.117Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=2
+node-1-1  | 2026-11-08T15:51:43.167072903Z time=2026-11-08T15:51:43.166Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:71 type=ADD product=load-0015 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:43.264396032Z time=2026-11-08T15:51:43.264Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:72 type=REMOVE product=load-0006 quantity=1 now=999
+node-1-1  | 2026-11-08T15:51:43.398384428Z time=2026-11-08T15:51:43.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=2
+node-1-1  | 2026-11-08T15:51:43.493001054Z time=2026-11-08T15:51:43.492Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:73 type=REMOVE product=load-0043 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:43.850615101Z time=2026-11-08T15:51:43.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=2 pushed=1
+node-1-1  | 2026-11-08T15:51:43.850659552Z time=2026-11-08T15:51:43.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=1
+node-1-1  | 2026-11-08T15:51:43.947622706Z time=2026-11-08T15:51:43.947Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:74 type=ADD product=load-0039 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:44.116858779Z time=2026-11-08T15:51:44.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=1
+node-1-1  | 2026-11-08T15:51:44.259450381Z time=2026-11-08T15:51:44.259Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:75 type=ADD product=load-0026 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:44.299148560Z time=2026-11-08T15:51:44.298Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:76 type=REMOVE product=load-0001 quantity=1 now=999
+node-1-1  | 2026-11-08T15:51:44.398159544Z time=2026-11-08T15:51:44.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=4
+node-1-1  | 2026-11-08T15:51:44.503034413Z time=2026-11-08T15:51:44.502Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:77 type=ADD product=load-0025 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:44.685536053Z time=2026-11-08T15:51:44.685Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:78 type=ADD product=load-0024 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:44.851382637Z time=2026-11-08T15:51:44.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=1 pushed=2
+node-1-1  | 2026-11-08T15:51:44.851499952Z time=2026-11-08T15:51:44.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=3
+node-1-1  | 2026-11-08T15:51:44.926794427Z time=2026-11-08T15:51:44.926Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:79 type=REMOVE product=load-0007 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:45.082158541Z time=2026-11-08T15:51:45.081Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:80 type=ADD product=load-0003 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:45.398562139Z time=2026-11-08T15:51:45.398Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0005 op=node-3@1794153086583888145:32 concurrent_with=node-2@1794153087395914662:27
+node-1-1  | 2026-11-08T15:51:45.398583886Z time=2026-11-08T15:51:45.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=4
+node-1-1  | 2026-11-08T15:51:45.469756606Z time=2026-11-08T15:51:45.469Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:81 type=REMOVE product=load-0041 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:45.834771118Z time=2026-11-08T15:51:45.834Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:82 type=ADD product=load-0001 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:45.851985520Z time=2026-11-08T15:51:45.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=3 pushed=2
+node-1-1  | 2026-11-08T15:51:45.852135825Z time=2026-11-08T15:51:45.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=3
+node-1-1  | 2026-11-08T15:51:45.971317679Z time=2026-11-08T15:51:45.971Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:83 type=ADD product=load-0006 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:46.117320296Z time=2026-11-08T15:51:46.117Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=1
+node-1-1  | 2026-11-08T15:51:46.397987381Z time=2026-11-08T15:51:46.397Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=1
+node-1-1  | 2026-11-08T15:51:46.554163402Z time=2026-11-08T15:51:46.553Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:84 type=ADD product=load-0033 quantity=1 now=1004
+node-1-1  | 2026-11-08T15:51:46.850634653Z time=2026-11-08T15:51:46.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=3 pushed=1
+node-1-1  | 2026-11-08T15:51:46.850654543Z time=2026-11-08T15:51:46.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=2 pushed=2
+node-1-1  | 2026-11-08T15:51:47.332656938Z time=2026-11-08T15:51:47.332Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:85 type=ADD product=load-0036 quantity=1 now=1003
+node-1-1  | 2026-11-08T15:51:47.397688925Z time=2026-11-08T15:51:47.397Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=1
+node-1-1  | 2026-11-08T15:51:47.603265656Z time=2026-11-08T15:51:47.603Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:86 type=ADD product=load-0011 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:47.850630142Z time=2026-11-08T15:51:47.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=7 pushed=1
+node-1-1  | 2026-11-08T15:51:47.851062035Z time=2026-11-08T15:51:47.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=0 pushed=5
+node-1-1  | 2026-11-08T15:51:48.081989199Z time=2026-11-08T15:51:48.081Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:87 type=ADD product=load-0021 quantity=1 now=1004
+node-1-1  | 2026-11-08T15:51:48.090177908Z time=2026-11-08T15:51:48.089Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:88 type=ADD product=load-0032 quantity=1 now=1006
+node-1-1  | 2026-11-08T15:51:48.116957451Z time=2026-11-08T15:51:48.116Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=1
+node-1-1  | 2026-11-08T15:51:48.398699236Z time=2026-11-08T15:51:48.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=2
+node-1-1  | 2026-11-08T15:51:48.508582802Z time=2026-11-08T15:51:48.508Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:89 type=ADD product=load-0014 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:48.557896745Z time=2026-11-08T15:51:48.557Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:90 type=ADD product=load-0038 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:48.561187974Z time=2026-11-08T15:51:48.560Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:91 type=ADD product=load-0044 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:48.850554814Z time=2026-11-08T15:51:48.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=2 pushed=3
+node-1-1  | 2026-11-08T15:51:48.850693621Z time=2026-11-08T15:51:48.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=1 pushed=4
+node-1-1  | 2026-11-08T15:51:48.958801580Z time=2026-11-08T15:51:48.958Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:92 type=ADD product=load-0043 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:49.117914496Z time=2026-11-08T15:51:49.117Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=2
+node-1-1  | 2026-11-08T15:51:49.338003073Z time=2026-11-08T15:51:49.337Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:93 type=ADD product=load-0009 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:49.398483450Z time=2026-11-08T15:51:49.398Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0047 op=node-3@1794153086583888145:44 concurrent_with=node-2@1794153087395914662:34
+node-1-1  | 2026-11-08T15:51:49.398509938Z time=2026-11-08T15:51:49.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=1
+node-1-1  | 2026-11-08T15:51:49.399826470Z time=2026-11-08T15:51:49.399Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:94 type=ADD product=load-0049 quantity=1 now=1004
+node-1-1  | 2026-11-08T15:51:49.850348745Z time=2026-11-08T15:51:49.850Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0049 op=node-2@1794153087395914662:37 concurrent_with=node-1@1794153086848470290:94
+node-1-1  | 2026-11-08T15:51:49.850938666Z time=2026-11-08T15:51:49.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=3 pushed=1
+node-1-1  | 2026-11-08T15:51:49.851068407Z time=2026-11-08T15:51:49.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=0 pushed=5
+node-1-1  | 2026-11-08T15:51:50.041588217Z time=2026-11-08T15:51:50.041Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:95 type=ADD product=load-0017 quantity=1 now=1004
+node-1-1  | 2026-11-08T15:51:50.130219188Z time=2026-11-08T15:51:50.130Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:96 type=REMOVE product=load-0018 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:50.359440220Z time=2026-11-08T15:51:50.359Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:97 type=REMOVE product=load-0038 quantity=1 now=1000
+node-1-1  | 2026-11-08T15:51:50.398571566Z time=2026-11-08T15:51:50.398Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0018 op=node-3@1794153086583888145:45 concurrent_with=node-1@1794153086848470290:96
+node-1-1  | 2026-11-08T15:51:50.398579552Z time=2026-11-08T15:51:50.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=2
+node-1-1  | 2026-11-08T15:51:50.832633186Z time=2026-11-08T15:51:50.832Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:98 type=ADD product=load-0043 quantity=1 now=1002
+node-1-1  | 2026-11-08T15:51:50.851136187Z time=2026-11-08T15:51:50.850Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0038 op=node-3@1794153086583888145:46 concurrent_with=node-1@1794153086848470290:97
+node-1-1  | 2026-11-08T15:51:50.851956192Z time=2026-11-08T15:51:50.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=4 pushed=1
+node-1-1  | 2026-11-08T15:51:50.860286251Z time=2026-11-08T15:51:50.852Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=1 pushed=4
+node-1-1  | 2026-11-08T15:51:50.889780912Z time=2026-11-08T15:51:50.889Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:99 type=ADD product=load-0046 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:51.398956648Z time=2026-11-08T15:51:51.398Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-2 applied=1
+node-1-1  | 2026-11-08T15:51:51.671889968Z time=2026-11-08T15:51:51.671Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:100 type=ADD product=load-0000 quantity=1 now=1001
+node-1-1  | 2026-11-08T15:51:51.851469460Z time=2026-11-08T15:51:51.851Z level=INFO msg="concurrent ops detected" node=node-1 event=concurrent_ops_detected product=load-0018 op=node-4@1794153087114703424:54 concurrent_with=node-3@1794153086583888145:49
+node-1-1  | 2026-11-08T15:51:51.852065637Z time=2026-11-08T15:51:51.851Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=5 pushed=1
+node-1-1  | 2026-11-08T15:51:51.852391673Z time=2026-11-08T15:51:51.852Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=2 pushed=3
+node-1-1  | 2026-11-08T15:51:52.031533819Z time=2026-11-08T15:51:52.031Z level=INFO msg="op created" node=node-1 event=op_created op=node-1@1794153086848470290:101 type=ADD product=load-0026 quantity=1 now=999
+node-1-1  | 2026-11-08T15:51:52.117414633Z time=2026-11-08T15:51:52.117Z level=INFO msg="ops received" node=node-1 event=ops_received peer=node-4 applied=2
+node-1-1  | 2026-11-08T15:51:52.850714923Z time=2026-11-08T15:51:52.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-4 applied=1 pushed=0
+node-1-1  | 2026-11-08T15:51:52.850755461Z time=2026-11-08T15:51:52.850Z level=INFO msg="anti-entropy exchange" node=node-1 event=anti_entropy_success peer=node-2 applied=2 pushed=0
+node-2-1  | 2026-11-08T15:51:27.396015485Z time=2026-11-08T15:51:27.395Z level=INFO msg="configured neighbors" node=node-2 event=configured_neighbors neighbors=[node-1,node-3]
+node-2-1  | 2026-11-08T15:51:27.396485874Z time=2026-11-08T15:51:27.396Z level=INFO msg="node started" node=node-2 event=node_started replica=node-2@1794153087395914662 addr=[::]:8080
+node-2-1  | 2026-11-08T15:51:27.398223635Z time=2026-11-08T15:51:27.398Z level=INFO msg="peer connected" node=node-2 event=gossip_peer_connected peer=node-1
+node-2-1  | 2026-11-08T15:51:27.398247183Z time=2026-11-08T15:51:27.398Z level=INFO msg="peer connected" node=node-2 event=gossip_peer_connected peer=node-3
+node-2-1  | 2026-11-08T15:51:27.880360503Z time=2026-11-08T15:51:27.880Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=50
+node-2-1  | 2026-11-08T15:51:32.585905335Z time=2026-11-08T15:51:32.585Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-2-1  | 2026-11-08T15:51:32.851510834Z time=2026-11-08T15:51:32.851Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=3
+node-2-1  | 2026-11-08T15:51:32.919061514Z time=2026-11-08T15:51:32.918Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:1 type=ADD product=load-0046 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:33.229527530Z time=2026-11-08T15:51:33.229Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:2 type=ADD product=load-0009 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:33.398616709Z time=2026-11-08T15:51:33.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=1 pushed=2
+node-2-1  | 2026-11-08T15:51:33.398675806Z time=2026-11-08T15:51:33.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=4 pushed=2
+node-2-1  | 2026-11-08T15:51:33.587658053Z time=2026-11-08T15:51:33.587Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-2-1  | 2026-11-08T15:51:34.398899545Z time=2026-11-08T15:51:34.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=5 pushed=0
+node-2-1  | 2026-11-08T15:51:34.399656014Z time=2026-11-08T15:51:34.399Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=1 pushed=1
+node-2-1  | 2026-11-08T15:51:34.544080717Z time=2026-11-08T15:51:34.543Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:3 type=ADD product=load-0032 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:26.583971443Z time=2026-11-08T15:51:26.583Z level=INFO msg="configured neighbors" node=node-3 event=configured_neighbors neighbors=[node-2,node-4]
+node-2-1  | 2026-11-08T15:51:34.587236330Z time=2026-11-08T15:51:34.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=4
+node-2-1  | 2026-11-08T15:51:34.851736975Z time=2026-11-08T15:51:34.851Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=1
+node-2-1  | 2026-11-08T15:51:34.886624371Z time=2026-11-08T15:51:34.886Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:4 type=ADD product=load-0025 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:35.329370279Z time=2026-11-08T15:51:35.328Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:5 type=ADD product=load-0002 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:35.357216397Z time=2026-11-08T15:51:35.356Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:6 type=ADD product=load-0004 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:35.398351630Z time=2026-11-08T15:51:35.398Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0004 op=node-3@1794153086583888145:6 concurrent_with=node-2@1794153087395914662:6
+node-2-1  | 2026-11-08T15:51:35.398757386Z time=2026-11-08T15:51:35.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=4 pushed=3
+node-2-1  | 2026-11-08T15:51:35.399125582Z time=2026-11-08T15:51:35.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=1 pushed=4
+node-2-1  | 2026-11-08T15:51:35.654066842Z time=2026-11-08T15:51:35.653Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:7 type=ADD product=load-0034 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:35.740892202Z time=2026-11-08T15:51:35.740Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:8 type=ADD product=load-0023 quantity=1 now=1000
+node-2-1  | 2026-11-08T15:51:35.851308551Z time=2026-11-08T15:51:35.851Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=1
+node-2-1  | 2026-11-08T15:51:36.172670766Z time=2026-11-08T15:51:36.172Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:9 type=ADD product=load-0029 quantity=1 now=1000
+node-2-1  | 2026-11-08T15:51:36.398741475Z time=2026-11-08T15:51:36.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=2 pushed=3
+node-2-1  | 2026-11-08T15:51:36.398765883Z time=2026-11-08T15:51:36.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=0 pushed=1
+node-2-1  | 2026-11-08T15:51:36.579692287Z time=2026-11-08T15:51:36.579Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:10 type=ADD product=load-0019 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:36.904821659Z time=2026-11-08T15:51:36.904Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:11 type=ADD product=load-0049 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:27.114786443Z time=2026-11-08T15:51:27.114Z level=INFO msg="configured neighbors" node=node-4 event=configured_neighbors neighbors=[node-1,node-3]
+node-2-1  | 2026-11-08T15:51:37.009729873Z time=2026-11-08T15:51:37.009Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:12 type=ADD product=load-0033 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:37.369928596Z time=2026-11-08T15:51:37.369Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:13 type=ADD product=load-0036 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:26.584431996Z time=2026-11-08T15:51:26.584Z level=INFO msg="node started" node=node-3 event=node_started replica=node-3@1794153086583888145 addr=[::]:8080
+node-4-1  | 2026-11-08T15:51:27.115117270Z time=2026-11-08T15:51:27.115Z level=INFO msg="node started" node=node-4 event=node_started replica=node-4@1794153087114703424 addr=[::]:8080
+node-3-1  | 2026-11-08T15:51:26.607816798Z time=2026-11-08T15:51:26.607Z level=WARN msg="anti-entropy failed" node=node-3 event=anti_entropy_failed peer=node-4 err="pull: Post \"http://node-4:8080/internal/gossip/pull\": dial tcp: lookup node-4 on 127.0.0.11:53: server misbehaving"
+node-3-1  | 2026-11-08T15:51:26.611573102Z time=2026-11-08T15:51:26.611Z level=WARN msg="anti-entropy failed" node=node-3 event=anti_entropy_failed peer=node-2 err="pull: Post \"http://node-2:8080/internal/gossip/pull\": dial tcp: lookup node-2 on 127.0.0.11:53: server misbehaving"
+node-3-1  | 2026-11-08T15:51:27.587751111Z time=2026-11-08T15:51:27.587Z level=INFO msg="peer connected" node=node-3 event=gossip_peer_connected peer=node-2
+node-3-1  | 2026-11-08T15:51:27.587798006Z time=2026-11-08T15:51:27.587Z level=INFO msg="peer connected" node=node-3 event=gossip_peer_connected peer=node-4
+node-2-1  | 2026-11-08T15:51:37.398798653Z time=2026-11-08T15:51:37.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=8 pushed=3
+node-3-1  | 2026-11-08T15:51:28.145594954Z time=2026-11-08T15:51:28.145Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=50
+node-3-1  | 2026-11-08T15:51:32.467856907Z time=2026-11-08T15:51:32.467Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:1 type=ADD product=load-0034 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:32.586080020Z time=2026-11-08T15:51:32.585Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=1
+node-3-1  | 2026-11-08T15:51:32.586103422Z time=2026-11-08T15:51:32.585Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=1 pushed=1
+node-4-1  | 2026-11-08T15:51:27.116901069Z time=2026-11-08T15:51:27.116Z level=INFO msg="peer connected" node=node-4 event=gossip_peer_connected peer=node-3
+node-3-1  | 2026-11-08T15:51:32.843815360Z time=2026-11-08T15:51:32.843Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:2 type=ADD product=load-0003 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:33.116916578Z time=2026-11-08T15:51:33.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=2
+node-2-1  | 2026-11-08T15:51:37.398810392Z time=2026-11-08T15:51:37.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=1 pushed=4
+node-3-1  | 2026-11-08T15:51:33.398357418Z time=2026-11-08T15:51:33.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=2
+node-3-1  | 2026-11-08T15:51:33.587705151Z time=2026-11-08T15:51:33.587Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=3 pushed=2
+node-2-1  | 2026-11-08T15:51:37.692418184Z time=2026-11-08T15:51:37.692Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:14 type=REMOVE product=load-0014 quantity=1 now=1000
+node-3-1  | 2026-11-08T15:51:33.587924421Z time=2026-11-08T15:51:33.587Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=2 pushed=1
+node-2-1  | 2026-11-08T15:51:37.808456369Z time=2026-11-08T15:51:37.808Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:15 type=REMOVE product=load-0041 quantity=1 now=1000
+node-3-1  | 2026-11-08T15:51:33.715437857Z time=2026-11-08T15:51:33.715Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:3 type=REMOVE product=load-0029 quantity=1 now=999
+node-2-1  | 2026-11-08T15:51:37.850414450Z time=2026-11-08T15:51:37.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=2
+node-3-1  | 2026-11-08T15:51:34.117854900Z time=2026-11-08T15:51:34.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=4
+node-2-1  | 2026-11-08T15:51:38.149345243Z time=2026-11-08T15:51:38.149Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:16 type=ADD product=load-0041 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:34.586614008Z time=2026-11-08T15:51:34.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=4 pushed=0
+node-2-1  | 2026-11-08T15:51:38.398269109Z time=2026-11-08T15:51:38.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=0 pushed=2
+node-2-1  | 2026-11-08T15:51:38.398287253Z time=2026-11-08T15:51:38.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=4 pushed=3
+node-2-1  | 2026-11-08T15:51:38.586757290Z time=2026-11-08T15:51:38.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-2-1  | 2026-11-08T15:51:38.851326245Z time=2026-11-08T15:51:38.851Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=2
+node-2-1  | 2026-11-08T15:51:39.263443820Z time=2026-11-08T15:51:39.263Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:17 type=REMOVE product=load-0011 quantity=1 now=1000
+node-2-1  | 2026-11-08T15:51:39.398655941Z time=2026-11-08T15:51:39.398Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0011 op=node-3@1794153086583888145:17 concurrent_with=node-2@1794153087395914662:17
+node-2-1  | 2026-11-08T15:51:39.398933847Z time=2026-11-08T15:51:39.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=4 pushed=1
+node-2-1  | 2026-11-08T15:51:39.399233859Z time=2026-11-08T15:51:39.399Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=3 pushed=3
+node-2-1  | 2026-11-08T15:51:39.586829795Z time=2026-11-08T15:51:39.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-4-1  | 2026-11-08T15:51:27.116913039Z time=2026-11-08T15:51:27.116Z level=INFO msg="peer connected" node=node-4 event=gossip_peer_connected peer=node-1
+node-2-1  | 2026-11-08T15:51:40.397363830Z time=2026-11-08T15:51:40.397Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=7 pushed=0
+node-2-1  | 2026-11-08T15:51:40.397685434Z time=2026-11-08T15:51:40.397Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=1 pushed=2
+node-2-1  | 2026-11-08T15:51:40.587479426Z time=2026-11-08T15:51:40.587Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=2
+node-3-1  | 2026-11-08T15:51:34.587429418Z time=2026-11-08T15:51:34.587Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=2 pushed=4
+node-2-1  | 2026-11-08T15:51:40.676141834Z time=2026-11-08T15:51:40.675Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:18 type=ADD product=load-0020 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:34.909299539Z time=2026-11-08T15:51:34.909Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:4 type=ADD product=load-0035 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:40.834471914Z time=2026-11-08T15:51:40.834Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:19 type=ADD product=load-0019 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:34.945277150Z time=2026-11-08T15:51:34.944Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:5 type=REMOVE product=load-0035 quantity=1 now=1000
+node-2-1  | 2026-11-08T15:51:40.851054519Z time=2026-11-08T15:51:40.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=1
+node-3-1  | 2026-11-08T15:51:35.117790677Z time=2026-11-08T15:51:35.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=2
+node-3-1  | 2026-11-08T15:51:35.198768477Z time=2026-11-08T15:51:35.198Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:6 type=ADD product=load-0004 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:27.880738513Z time=2026-11-08T15:51:27.880Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=50
+node-3-1  | 2026-11-08T15:51:35.398844729Z time=2026-11-08T15:51:35.398Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0004 op=node-2@1794153087395914662:6 concurrent_with=node-3@1794153086583888145:6
+node-3-1  | 2026-11-08T15:51:35.398857839Z time=2026-11-08T15:51:35.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=4
+node-2-1  | 2026-11-08T15:51:41.200109497Z time=2026-11-08T15:51:41.199Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:20 type=ADD product=load-0007 quantity=1 now=1003
+node-2-1  | 2026-11-08T15:51:41.374861392Z time=2026-11-08T15:51:41.374Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:21 type=ADD product=load-0033 quantity=1 now=1003
+node-2-1  | 2026-11-08T15:51:41.398769893Z time=2026-11-08T15:51:41.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=2 pushed=4
+node-2-1  | 2026-11-08T15:51:41.398855956Z time=2026-11-08T15:51:41.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=0 pushed=2
+node-2-1  | 2026-11-08T15:51:41.755837062Z time=2026-11-08T15:51:41.755Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:22 type=ADD product=load-0023 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:41.850395505Z time=2026-11-08T15:51:41.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=5
+node-2-1  | 2026-11-08T15:51:42.313376151Z time=2026-11-08T15:51:42.313Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:23 type=ADD product=load-0037 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:35.586706129Z time=2026-11-08T15:51:35.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=0 pushed=5
+node-2-1  | 2026-11-08T15:51:42.379204327Z time=2026-11-08T15:51:42.378Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:24 type=REMOVE product=load-0019 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:42.398938769Z time=2026-11-08T15:51:42.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=4 pushed=3
+node-3-1  | 2026-11-08T15:51:35.764476579Z time=2026-11-08T15:51:35.764Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:7 type=REMOVE product=load-0000 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:28.146008072Z time=2026-11-08T15:51:28.145Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=0 pushed=50
+node-3-1  | 2026-11-08T15:51:36.089399929Z time=2026-11-08T15:51:36.089Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:8 type=ADD product=load-0013 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:32.467350675Z time=2026-11-08T15:51:32.467Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:1 type=ADD product=load-0011 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:32.586078793Z time=2026-11-08T15:51:32.585Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=1
+node-4-1  | 2026-11-08T15:51:32.851431960Z time=2026-11-08T15:51:32.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=2
+node-4-1  | 2026-11-08T15:51:33.117065321Z time=2026-11-08T15:51:33.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=2
+node-4-1  | 2026-11-08T15:51:33.117116244Z time=2026-11-08T15:51:33.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:33.364718152Z time=2026-11-08T15:51:33.364Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:2 type=ADD product=load-0014 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:33.587348857Z time=2026-11-08T15:51:33.587Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=2
+node-4-1  | 2026-11-08T15:51:33.630476649Z time=2026-11-08T15:51:33.630Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:3 type=ADD product=load-0032 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:33.698752986Z time=2026-11-08T15:51:33.698Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:4 type=ADD product=load-0006 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:33.763476387Z time=2026-11-08T15:51:33.763Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:5 type=ADD product=load-0021 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:33.852009005Z time=2026-11-08T15:51:33.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=2
+node-4-1  | 2026-11-08T15:51:34.117442456Z time=2026-11-08T15:51:34.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=0
+node-4-1  | 2026-11-08T15:51:34.118262384Z time=2026-11-08T15:51:34.118Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=4
+node-4-1  | 2026-11-08T15:51:34.128967843Z time=2026-11-08T15:51:34.128Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:6 type=ADD product=load-0013 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:34.140978014Z time=2026-11-08T15:51:34.140Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:7 type=ADD product=load-0025 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:34.345674356Z time=2026-11-08T15:51:34.345Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:8 type=ADD product=load-0010 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:34.563489240Z time=2026-11-08T15:51:34.563Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:9 type=ADD product=load-0030 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:34.807226298Z time=2026-11-08T15:51:34.806Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:10 type=ADD product=load-0048 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:34.851794528Z time=2026-11-08T15:51:34.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=3
+node-4-1  | 2026-11-08T15:51:35.117869380Z time=2026-11-08T15:51:35.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=0 pushed=2
+node-2-1  | 2026-11-08T15:51:42.399149418Z time=2026-11-08T15:51:42.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=0 pushed=3
+node-3-1  | 2026-11-08T15:51:36.116787336Z time=2026-11-08T15:51:36.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=1
+node-2-1  | 2026-11-08T15:51:42.585794442Z time=2026-11-08T15:51:42.585Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-4-1  | 2026-11-08T15:51:35.117910611Z time=2026-11-08T15:51:35.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=2 pushed=2
+node-4-1  | 2026-11-08T15:51:35.586620954Z time=2026-11-08T15:51:35.586Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0004 op=node-3@1794153086583888145:6 concurrent_with=node-2@1794153087395914662:6
+node-4-1  | 2026-11-08T15:51:35.586658461Z time=2026-11-08T15:51:35.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=5
+node-4-1  | 2026-11-08T15:51:35.851241314Z time=2026-11-08T15:51:35.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=1
+node-4-1  | 2026-11-08T15:51:36.117085131Z time=2026-11-08T15:51:36.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:36.117273477Z time=2026-11-08T15:51:36.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=2
+node-4-1  | 2026-11-08T15:51:36.126506998Z time=2026-11-08T15:51:36.126Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:11 type=ADD product=load-0006 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:36.226293376Z time=2026-11-08T15:51:36.226Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:12 type=REMOVE product=load-0005 quantity=1 now=1000
+node-4-1  | 2026-11-08T15:51:36.541893701Z time=2026-11-08T15:51:36.541Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:13 type=ADD product=load-0028 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:36.575162940Z time=2026-11-08T15:51:36.574Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:14 type=ADD product=load-0032 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:36.586482140Z time=2026-11-08T15:51:36.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=2
+node-3-1  | 2026-11-08T15:51:36.398553861Z time=2026-11-08T15:51:36.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=3
+node-2-1  | 2026-11-08T15:51:42.850486372Z time=2026-11-08T15:51:42.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=3
+node-3-1  | 2026-11-08T15:51:36.585849890Z time=2026-11-08T15:51:36.585Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=1 pushed=0
+node-2-1  | 2026-11-08T15:51:43.397950787Z time=2026-11-08T15:51:43.397Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=4 pushed=0
+node-2-1  | 2026-11-08T15:51:43.398553486Z time=2026-11-08T15:51:43.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=2 pushed=2
+node-2-1  | 2026-11-08T15:51:43.497882267Z time=2026-11-08T15:51:43.497Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:25 type=ADD product=load-0011 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:36.586622444Z time=2026-11-08T15:51:36.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=4 pushed=2
+node-2-1  | 2026-11-08T15:51:43.518444391Z time=2026-11-08T15:51:43.518Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:26 type=ADD product=load-0046 quantity=1 now=1000
+node-3-1  | 2026-11-08T15:51:36.587479477Z time=2026-11-08T15:51:36.587Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:9 type=ADD product=load-0007 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:36.952295588Z time=2026-11-08T15:51:36.952Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:15 type=ADD product=load-0021 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:36.970737048Z time=2026-11-08T15:51:36.970Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:10 type=ADD product=load-0048 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:37.116960176Z time=2026-11-08T15:51:37.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=2 pushed=1
+node-3-1  | 2026-11-08T15:51:37.116880107Z time=2026-11-08T15:51:37.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=1
+node-4-1  | 2026-11-08T15:51:37.117041564Z time=2026-11-08T15:51:37.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=0 pushed=3
+node-3-1  | 2026-11-08T15:51:37.336561858Z time=2026-11-08T15:51:37.336Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:11 type=REMOVE product=load-0022 quantity=1 now=999
+node-3-1  | 2026-11-08T15:51:37.398770378Z time=2026-11-08T15:51:37.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=4
+node-2-1  | 2026-11-08T15:51:43.850487154Z time=2026-11-08T15:51:43.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=1
+node-4-1  | 2026-11-08T15:51:37.420280051Z time=2026-11-08T15:51:37.420Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:16 type=ADD product=load-0019 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:44.397784162Z time=2026-11-08T15:51:44.397Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=6 pushed=0
+node-2-1  | 2026-11-08T15:51:44.398315123Z time=2026-11-08T15:51:44.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=2 pushed=4
+node-2-1  | 2026-11-08T15:51:44.851398522Z time=2026-11-08T15:51:44.851Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=3
+node-2-1  | 2026-11-08T15:51:45.076989027Z time=2026-11-08T15:51:45.076Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:27 type=ADD product=load-0005 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:45.089551656Z time=2026-11-08T15:51:45.089Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:28 type=ADD product=load-0040 quantity=1 now=1003
+node-2-1  | 2026-11-08T15:51:45.398088311Z time=2026-11-08T15:51:45.397Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0005 op=node-3@1794153086583888145:32 concurrent_with=node-2@1794153087395914662:27
+node-2-1  | 2026-11-08T15:51:45.398614625Z time=2026-11-08T15:51:45.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=4 pushed=2
+node-2-1  | 2026-11-08T15:51:45.398747456Z time=2026-11-08T15:51:45.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=0 pushed=4
+node-4-1  | 2026-11-08T15:51:37.586682353Z time=2026-11-08T15:51:37.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=5
+node-2-1  | 2026-11-08T15:51:45.586331411Z time=2026-11-08T15:51:45.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=2
+node-2-1  | 2026-11-08T15:51:45.851857284Z time=2026-11-08T15:51:45.851Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=3
+node-4-1  | 2026-11-08T15:51:37.850226153Z time=2026-11-08T15:51:37.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=1
+node-2-1  | 2026-11-08T15:51:46.171609555Z time=2026-11-08T15:51:46.171Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:29 type=ADD product=load-0049 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:38.052027134Z time=2026-11-08T15:51:38.051Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:17 type=ADD product=load-0026 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:46.398032598Z time=2026-11-08T15:51:46.397Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:38.113292013Z time=2026-11-08T15:51:38.113Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:18 type=ADD product=load-0027 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:46.398394436Z time=2026-11-08T15:51:46.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=2 pushed=2
+node-4-1  | 2026-11-08T15:51:38.117649001Z time=2026-11-08T15:51:38.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=3
+node-4-1  | 2026-11-08T15:51:38.117693868Z time=2026-11-08T15:51:38.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=3
+node-4-1  | 2026-11-08T15:51:38.586546034Z time=2026-11-08T15:51:38.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-3-1  | 2026-11-08T15:51:37.586750786Z time=2026-11-08T15:51:37.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=1 pushed=5
+node-4-1  | 2026-11-08T15:51:38.851382091Z time=2026-11-08T15:51:38.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=2
+node-3-1  | 2026-11-08T15:51:37.789792841Z time=2026-11-08T15:51:37.789Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:12 type=REMOVE product=load-0006 quantity=1 now=1000
+node-4-1  | 2026-11-08T15:51:38.923950166Z time=2026-11-08T15:51:38.923Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:19 type=ADD product=load-0043 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:38.117549757Z time=2026-11-08T15:51:38.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=3
+node-4-1  | 2026-11-08T15:51:39.116656474Z time=2026-11-08T15:51:39.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=1
+node-2-1  | 2026-11-08T15:51:46.592171904Z time=2026-11-08T15:51:46.592Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:30 type=ADD product=load-0045 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:39.117047340Z time=2026-11-08T15:51:39.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=3 pushed=4
+node-4-1  | 2026-11-08T15:51:39.491132279Z time=2026-11-08T15:51:39.490Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:20 type=ADD product=load-0040 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:46.772854804Z time=2026-11-08T15:51:46.772Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:31 type=ADD product=load-0035 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:39.586853864Z time=2026-11-08T15:51:39.586Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0011 op=node-2@1794153087395914662:17 concurrent_with=node-3@1794153086583888145:17
+node-2-1  | 2026-11-08T15:51:46.850463185Z time=2026-11-08T15:51:46.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=2
+node-4-1  | 2026-11-08T15:51:39.586880004Z time=2026-11-08T15:51:39.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-4-1  | 2026-11-08T15:51:39.612679440Z time=2026-11-08T15:51:39.612Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:21 type=REMOVE product=load-0046 quantity=1 now=1000
+node-4-1  | 2026-11-08T15:51:39.734386364Z time=2026-11-08T15:51:39.734Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:22 type=ADD product=load-0044 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:39.863870691Z time=2026-11-08T15:51:39.863Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:23 type=ADD product=load-0036 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:40.117960790Z time=2026-11-08T15:51:40.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=2 pushed=3
+node-4-1  | 2026-11-08T15:51:40.117982087Z time=2026-11-08T15:51:40.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=3
+node-4-1  | 2026-11-08T15:51:40.135151984Z time=2026-11-08T15:51:40.134Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:24 type=REMOVE product=load-0026 quantity=1 now=1000
+node-2-1  | 2026-11-08T15:51:47.043612415Z time=2026-11-08T15:51:47.043Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:32 type=ADD product=load-0044 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:38.155559217Z time=2026-11-08T15:51:38.155Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:13 type=ADD product=load-0004 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:38.398092550Z time=2026-11-08T15:51:38.397Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=3
+node-3-1  | 2026-11-08T15:51:38.439296318Z time=2026-11-08T15:51:38.439Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:14 type=ADD product=load-0040 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:38.586721371Z time=2026-11-08T15:51:38.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=0 pushed=3
+node-3-1  | 2026-11-08T15:51:38.586895838Z time=2026-11-08T15:51:38.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=1
+node-3-1  | 2026-11-08T15:51:38.597881034Z time=2026-11-08T15:51:38.597Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:15 type=ADD product=load-0021 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:38.608034683Z time=2026-11-08T15:51:38.607Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:16 type=ADD product=load-0020 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:47.397875462Z time=2026-11-08T15:51:47.397Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=1 pushed=1
+node-2-1  | 2026-11-08T15:51:47.398164570Z time=2026-11-08T15:51:47.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=3 pushed=2
+node-2-1  | 2026-11-08T15:51:47.850902720Z time=2026-11-08T15:51:47.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=5
+node-2-1  | 2026-11-08T15:51:48.058779481Z time=2026-11-08T15:51:48.058Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:33 type=ADD product=load-0002 quantity=1 now=1003
+node-2-1  | 2026-11-08T15:51:48.398740201Z time=2026-11-08T15:51:48.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=4 pushed=1
+node-2-1  | 2026-11-08T15:51:48.398765255Z time=2026-11-08T15:51:48.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=0 pushed=2
+node-2-1  | 2026-11-08T15:51:48.586728128Z time=2026-11-08T15:51:48.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-2-1  | 2026-11-08T15:51:48.770969898Z time=2026-11-08T15:51:48.770Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:34 type=ADD product=load-0047 quantity=1 now=1000
+node-2-1  | 2026-11-08T15:51:48.850588094Z time=2026-11-08T15:51:48.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=4
+node-2-1  | 2026-11-08T15:51:49.398125722Z time=2026-11-08T15:51:49.397Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0047 op=node-3@1794153086583888145:44 concurrent_with=node-2@1794153087395914662:34
+node-2-1  | 2026-11-08T15:51:49.398523275Z time=2026-11-08T15:51:49.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=3 pushed=1
+node-3-1  | 2026-11-08T15:51:39.043336593Z time=2026-11-08T15:51:39.043Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:17 type=ADD product=load-0011 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:39.116871238Z time=2026-11-08T15:51:39.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=4
+node-3-1  | 2026-11-08T15:51:39.398986687Z time=2026-11-08T15:51:39.398Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0011 op=node-2@1794153087395914662:17 concurrent_with=node-3@1794153086583888145:17
+node-3-1  | 2026-11-08T15:51:39.399030623Z time=2026-11-08T15:51:39.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=3
+node-3-1  | 2026-11-08T15:51:39.587095880Z time=2026-11-08T15:51:39.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=1
+node-3-1  | 2026-11-08T15:51:39.587123155Z time=2026-11-08T15:51:39.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=1 pushed=3
+node-3-1  | 2026-11-08T15:51:39.648977616Z time=2026-11-08T15:51:39.648Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:18 type=ADD product=load-0029 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:40.073226914Z time=2026-11-08T15:51:40.072Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:19 type=ADD product=load-0037 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:40.117522814Z time=2026-11-08T15:51:40.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=3
+node-3-1  | 2026-11-08T15:51:40.340634692Z time=2026-11-08T15:51:40.340Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:20 type=ADD product=load-0008 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:40.394995306Z time=2026-11-08T15:51:40.394Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:21 type=ADD product=load-0013 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:40.587507296Z time=2026-11-08T15:51:40.587Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=3 pushed=2
+node-3-1  | 2026-11-08T15:51:40.587522026Z time=2026-11-08T15:51:40.587Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=2
+node-3-1  | 2026-11-08T15:51:40.842827160Z time=2026-11-08T15:51:40.842Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:22 type=ADD product=load-0042 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:41.116480762Z time=2026-11-08T15:51:41.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=2
+node-3-1  | 2026-11-08T15:51:41.398519803Z time=2026-11-08T15:51:41.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=4
+node-3-1  | 2026-11-08T15:51:41.587567668Z time=2026-11-08T15:51:41.587Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=3 pushed=2
+node-3-1  | 2026-11-08T15:51:41.950804437Z time=2026-11-08T15:51:41.950Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:23 type=REMOVE product=load-0046 quantity=1 now=999
+node-3-1  | 2026-11-08T15:51:42.116646432Z time=2026-11-08T15:51:42.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=4
+node-3-1  | 2026-11-08T15:51:42.234822087Z time=2026-11-08T15:51:42.234Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:24 type=ADD product=load-0049 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:42.398699817Z time=2026-11-08T15:51:42.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=3
+node-3-1  | 2026-11-08T15:51:42.586103783Z time=2026-11-08T15:51:42.585Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=1
+node-3-1  | 2026-11-08T15:51:42.586129123Z time=2026-11-08T15:51:42.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=1 pushed=3
+node-3-1  | 2026-11-08T15:51:42.721756039Z time=2026-11-08T15:51:42.721Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:25 type=ADD product=load-0027 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:43.043704523Z time=2026-11-08T15:51:43.043Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:26 type=ADD product=load-0019 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:43.117585660Z time=2026-11-08T15:51:43.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=5
+node-3-1  | 2026-11-08T15:51:43.585897565Z time=2026-11-08T15:51:43.585Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=4 pushed=0
+node-3-1  | 2026-11-08T15:51:43.586357930Z time=2026-11-08T15:51:43.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=0 pushed=4
+node-3-1  | 2026-11-08T15:51:43.672095964Z time=2026-11-08T15:51:43.671Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:27 type=REMOVE product=load-0025 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:43.866515724Z time=2026-11-08T15:51:43.866Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:28 type=ADD product=load-0048 quantity=1 now=1004
+node-3-1  | 2026-11-08T15:51:43.873311064Z time=2026-11-08T15:51:43.873Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:29 type=REMOVE product=load-0011 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:44.117149042Z time=2026-11-08T15:51:44.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=3
+node-3-1  | 2026-11-08T15:51:44.315304499Z time=2026-11-08T15:51:44.315Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:30 type=ADD product=load-0033 quantity=1 now=1004
+node-3-1  | 2026-11-08T15:51:44.585751241Z time=2026-11-08T15:51:44.585Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=2 pushed=0
+node-3-1  | 2026-11-08T15:51:44.586746306Z time=2026-11-08T15:51:44.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=0 pushed=3
+node-3-1  | 2026-11-08T15:51:44.605158757Z time=2026-11-08T15:51:44.604Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:31 type=ADD product=load-0028 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:45.116888290Z time=2026-11-08T15:51:45.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=5
+node-3-1  | 2026-11-08T15:51:45.259959840Z time=2026-11-08T15:51:45.259Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:32 type=ADD product=load-0005 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:45.398307923Z time=2026-11-08T15:51:45.398Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0005 op=node-2@1794153087395914662:27 concurrent_with=node-3@1794153086583888145:32
+node-3-1  | 2026-11-08T15:51:45.398335386Z time=2026-11-08T15:51:45.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=2
+node-3-1  | 2026-11-08T15:51:45.480487356Z time=2026-11-08T15:51:45.480Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:33 type=REMOVE product=load-0033 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:45.547361078Z time=2026-11-08T15:51:45.547Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:34 type=REMOVE product=load-0009 quantity=1 now=1000
+node-3-1  | 2026-11-08T15:51:45.586518854Z time=2026-11-08T15:51:45.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=2
+node-3-1  | 2026-11-08T15:51:45.586542570Z time=2026-11-08T15:51:45.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=0 pushed=5
+node-3-1  | 2026-11-08T15:51:45.939066813Z time=2026-11-08T15:51:45.938Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:35 type=ADD product=load-0003 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:46.117359695Z time=2026-11-08T15:51:46.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=3
+node-4-1  | 2026-11-08T15:51:40.536948979Z time=2026-11-08T15:51:40.536Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:25 type=ADD product=load-0010 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:46.188962106Z time=2026-11-08T15:51:46.188Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:36 type=REMOVE product=load-0031 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:40.587279856Z time=2026-11-08T15:51:40.587Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=2
+node-4-1  | 2026-11-08T15:51:40.851004954Z time=2026-11-08T15:51:40.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=1
+node-4-1  | 2026-11-08T15:51:40.922360392Z time=2026-11-08T15:51:40.922Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:26 type=REMOVE product=load-0026 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:41.116684421Z time=2026-11-08T15:51:41.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=2
+node-4-1  | 2026-11-08T15:51:41.116714482Z time=2026-11-08T15:51:41.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=2
+node-4-1  | 2026-11-08T15:51:41.151649594Z time=2026-11-08T15:51:41.151Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:27 type=REMOVE product=load-0027 quantity=1 now=1000
+node-4-1  | 2026-11-08T15:51:41.229598467Z time=2026-11-08T15:51:41.229Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:28 type=REMOVE product=load-0047 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:41.570588727Z time=2026-11-08T15:51:41.570Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:29 type=ADD product=load-0042 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:41.587331851Z time=2026-11-08T15:51:41.587Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=2
+node-4-1  | 2026-11-08T15:51:41.601317457Z time=2026-11-08T15:51:41.601Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:30 type=REMOVE product=load-0016 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:41.626509701Z time=2026-11-08T15:51:41.626Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:31 type=ADD product=load-0013 quantity=1 now=1004
+node-4-1  | 2026-11-08T15:51:41.980870588Z time=2026-11-08T15:51:41.980Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:32 type=ADD product=load-0048 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:42.005309164Z time=2026-11-08T15:51:42.005Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:33 type=ADD product=load-0010 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:42.116787550Z time=2026-11-08T15:51:42.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=4
+node-3-1  | 2026-11-08T15:51:46.393432815Z time=2026-11-08T15:51:46.393Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:37 type=ADD product=load-0042 quantity=1 now=1004
+node-2-1  | 2026-11-08T15:51:49.398683337Z time=2026-11-08T15:51:49.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=2 pushed=1
+node-3-1  | 2026-11-08T15:51:46.398133992Z time=2026-11-08T15:51:46.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=2
+node-2-1  | 2026-11-08T15:51:49.526126673Z time=2026-11-08T15:51:49.525Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:35 type=ADD product=load-0031 quantity=1 now=1003
+node-2-1  | 2026-11-08T15:51:49.608554746Z time=2026-11-08T15:51:49.608Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:36 type=ADD product=load-0044 quantity=1 now=1003
+node-2-1  | 2026-11-08T15:51:49.808000405Z time=2026-11-08T15:51:49.807Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:37 type=REMOVE product=load-0049 quantity=1 now=1002
+node-2-1  | 2026-11-08T15:51:49.850704377Z time=2026-11-08T15:51:49.850Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0049 op=node-1@1794153086848470290:94 concurrent_with=node-2@1794153087395914662:37
+node-2-1  | 2026-11-08T15:51:49.850726438Z time=2026-11-08T15:51:49.850Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=1
+node-2-1  | 2026-11-08T15:51:49.935327923Z time=2026-11-08T15:51:49.935Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:38 type=ADD product=load-0010 quantity=1 now=1004
+node-2-1  | 2026-11-08T15:51:50.398053736Z time=2026-11-08T15:51:50.397Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0018 op=node-1@1794153086848470290:96 concurrent_with=node-3@1794153086583888145:45
+node-3-1  | 2026-11-08T15:51:46.586712862Z time=2026-11-08T15:51:46.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=1 pushed=3
+node-4-1  | 2026-11-08T15:51:42.116807244Z time=2026-11-08T15:51:42.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=3
+node-3-1  | 2026-11-08T15:51:46.848554063Z time=2026-11-08T15:51:46.848Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:38 type=REMOVE product=load-0027 quantity=1 now=1000
+node-3-1  | 2026-11-08T15:51:47.002977927Z time=2026-11-08T15:51:47.002Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:39 type=ADD product=load-0031 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:42.300028032Z time=2026-11-08T15:51:42.299Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:34 type=ADD product=load-0022 quantity=1 now=1000
+node-4-1  | 2026-11-08T15:51:42.585612479Z time=2026-11-08T15:51:42.585Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:35 type=ADD product=load-0000 quantity=1 now=1000
+node-2-1  | 2026-11-08T15:51:50.398526548Z time=2026-11-08T15:51:50.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:42.586025648Z time=2026-11-08T15:51:42.585Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-2-1  | 2026-11-08T15:51:50.398804805Z time=2026-11-08T15:51:50.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=2 pushed=2
+node-4-1  | 2026-11-08T15:51:42.726656610Z time=2026-11-08T15:51:42.726Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:36 type=ADD product=load-0015 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:50.488126160Z time=2026-11-08T15:51:50.487Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:39 type=ADD product=load-0029 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:42.778908182Z time=2026-11-08T15:51:42.778Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:37 type=ADD product=load-0008 quantity=1 now=1004
+node-2-1  | 2026-11-08T15:51:50.586826488Z time=2026-11-08T15:51:50.586Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0038 op=node-3@1794153086583888145:46 concurrent_with=node-1@1794153086848470290:97
+node-4-1  | 2026-11-08T15:51:42.928364098Z time=2026-11-08T15:51:42.928Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:38 type=ADD product=load-0012 quantity=1 now=1001
+node-2-1  | 2026-11-08T15:51:50.586864691Z time=2026-11-08T15:51:50.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=3
+node-4-1  | 2026-11-08T15:51:43.096811375Z time=2026-11-08T15:51:43.096Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:39 type=ADD product=load-0032 quantity=1 now=1005
+node-2-1  | 2026-11-08T15:51:50.851580324Z time=2026-11-08T15:51:50.851Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=1
+node-4-1  | 2026-11-08T15:51:43.117488719Z time=2026-11-08T15:51:43.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=0 pushed=2
+node-2-1  | 2026-11-08T15:51:51.212088598Z time=2026-11-08T15:51:51.211Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:40 type=ADD product=load-0015 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:43.117734597Z time=2026-11-08T15:51:43.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=2 pushed=5
+node-2-1  | 2026-11-08T15:51:51.399000837Z time=2026-11-08T15:51:51.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:43.586330270Z time=2026-11-08T15:51:43.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=4
+node-2-1  | 2026-11-08T15:51:51.399025710Z time=2026-11-08T15:51:51.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:43.850442437Z time=2026-11-08T15:51:43.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=1
+node-2-1  | 2026-11-08T15:51:51.586505020Z time=2026-11-08T15:51:51.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-3-1  | 2026-11-08T15:51:47.117877765Z time=2026-11-08T15:51:47.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=3
+node-2-1  | 2026-11-08T15:51:51.650575680Z time=2026-11-08T15:51:51.650Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:41 type=ADD product=load-0038 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:47.364812912Z time=2026-11-08T15:51:47.364Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:40 type=ADD product=load-0018 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:44.110299308Z time=2026-11-08T15:51:44.109Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:40 type=ADD product=load-0028 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:47.397946743Z time=2026-11-08T15:51:47.397Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=2
+node-2-1  | 2026-11-08T15:51:51.716212399Z time=2026-11-08T15:51:51.716Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:42 type=REMOVE product=load-0045 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:44.117222815Z time=2026-11-08T15:51:44.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=1
+node-2-1  | 2026-11-08T15:51:51.852141944Z time=2026-11-08T15:51:51.852Z level=INFO msg="concurrent ops detected" node=node-2 event=concurrent_ops_detected product=load-0018 op=node-4@1794153087114703424:54 concurrent_with=node-3@1794153086583888145:49
+node-2-1  | 2026-11-08T15:51:51.852151311Z time=2026-11-08T15:51:51.852Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-1 applied=3
+node-2-1  | 2026-11-08T15:51:52.398727213Z time=2026-11-08T15:51:52.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-1 applied=1 pushed=0
+node-3-1  | 2026-11-08T15:51:47.587095643Z time=2026-11-08T15:51:47.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=2 pushed=3
+node-3-1  | 2026-11-08T15:51:47.695700735Z time=2026-11-08T15:51:47.695Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:41 type=ADD product=load-0012 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:48.117078307Z time=2026-11-08T15:51:48.116Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=6
+node-3-1  | 2026-11-08T15:51:48.398532871Z time=2026-11-08T15:51:48.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=1
+node-3-1  | 2026-11-08T15:51:48.415855415Z time=2026-11-08T15:51:48.415Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:42 type=ADD product=load-0017 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:48.586885466Z time=2026-11-08T15:51:48.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=0 pushed=2
+node-3-1  | 2026-11-08T15:51:48.586928561Z time=2026-11-08T15:51:48.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=1
+node-3-1  | 2026-11-08T15:51:49.093944432Z time=2026-11-08T15:51:49.093Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:43 type=ADD product=load-0001 quantity=1 now=1001
+node-3-1  | 2026-11-08T15:51:49.117818033Z time=2026-11-08T15:51:49.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=5
+node-3-1  | 2026-11-08T15:51:49.252446800Z time=2026-11-08T15:51:49.252Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:44 type=ADD product=load-0047 quantity=1 now=1000
+node-3-1  | 2026-11-08T15:51:49.398375529Z time=2026-11-08T15:51:49.398Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0047 op=node-2@1794153087395914662:34 concurrent_with=node-3@1794153086583888145:44
+node-3-1  | 2026-11-08T15:51:49.398424431Z time=2026-11-08T15:51:49.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=1
+node-3-1  | 2026-11-08T15:51:49.586653725Z time=2026-11-08T15:51:49.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=2 pushed=0
+node-2-1  | 2026-11-08T15:51:52.399105968Z time=2026-11-08T15:51:52.398Z level=INFO msg="anti-entropy exchange" node=node-2 event=anti_entropy_success peer=node-3 applied=2 pushed=2
+node-3-1  | 2026-11-08T15:51:49.587091496Z time=2026-11-08T15:51:49.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=1 pushed=1
+node-3-1  | 2026-11-08T15:51:49.730319832Z time=2026-11-08T15:51:49.730Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:45 type=ADD product=load-0018 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:50.117995023Z time=2026-11-08T15:51:50.117Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0049 op=node-2@1794153087395914662:37 concurrent_with=node-1@1794153086848470290:94
+node-2-1  | 2026-11-08T15:51:52.404589977Z time=2026-11-08T15:51:52.404Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:43 type=REMOVE product=load-0041 quantity=1 now=999
+node-3-1  | 2026-11-08T15:51:50.118027054Z time=2026-11-08T15:51:50.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=4
+node-2-1  | 2026-11-08T15:51:52.461941973Z time=2026-11-08T15:51:52.461Z level=INFO msg="op created" node=node-2 event=op_created op=node-2@1794153087395914662:44 type=ADD product=load-0031 quantity=1 now=1004
+node-4-1  | 2026-11-08T15:51:44.117289995Z time=2026-11-08T15:51:44.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=3 pushed=3
+node-2-1  | 2026-11-08T15:51:52.587157140Z time=2026-11-08T15:51:52.586Z level=INFO msg="ops received" node=node-2 event=ops_received peer=node-3 applied=1
+node-4-1  | 2026-11-08T15:51:44.586505808Z time=2026-11-08T15:51:44.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-4-1  | 2026-11-08T15:51:44.703209127Z time=2026-11-08T15:51:44.702Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:41 type=REMOVE product=load-0014 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:44.851162068Z time=2026-11-08T15:51:44.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=2
+node-4-1  | 2026-11-08T15:51:45.116294818Z time=2026-11-08T15:51:45.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=0
+node-4-1  | 2026-11-08T15:51:45.116878558Z time=2026-11-08T15:51:45.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=5
+node-4-1  | 2026-11-08T15:51:45.586290277Z time=2026-11-08T15:51:45.586Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0005 op=node-3@1794153086583888145:32 concurrent_with=node-2@1794153087395914662:27
+node-3-1  | 2026-11-08T15:51:50.398345674Z time=2026-11-08T15:51:50.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=1
+node-4-1  | 2026-11-08T15:51:45.586316862Z time=2026-11-08T15:51:45.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=5
+node-3-1  | 2026-11-08T15:51:50.419343733Z time=2026-11-08T15:51:50.419Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:46 type=ADD product=load-0038 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:45.719960930Z time=2026-11-08T15:51:45.719Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:42 type=REMOVE product=load-0045 quantity=1 now=998
+node-3-1  | 2026-11-08T15:51:50.466048994Z time=2026-11-08T15:51:50.465Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:47 type=ADD product=load-0010 quantity=1 now=1005
+node-3-1  | 2026-11-08T15:51:50.586403069Z time=2026-11-08T15:51:50.586Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0018 op=node-1@1794153086848470290:96 concurrent_with=node-3@1794153086583888145:45
+node-3-1  | 2026-11-08T15:51:50.586455350Z time=2026-11-08T15:51:50.586Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0038 op=node-1@1794153086848470290:97 concurrent_with=node-3@1794153086583888145:46
+node-3-1  | 2026-11-08T15:51:50.586863654Z time=2026-11-08T15:51:50.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=1 pushed=3
+node-3-1  | 2026-11-08T15:51:50.586967470Z time=2026-11-08T15:51:50.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=3 pushed=3
+node-3-1  | 2026-11-08T15:51:50.845575358Z time=2026-11-08T15:51:50.845Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:48 type=ADD product=load-0024 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:51.117778833Z time=2026-11-08T15:51:51.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=3
+node-3-1  | 2026-11-08T15:51:51.242772245Z time=2026-11-08T15:51:51.242Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:49 type=ADD product=load-0018 quantity=1 now=1002
+node-3-1  | 2026-11-08T15:51:51.398943050Z time=2026-11-08T15:51:51.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=1
+node-3-1  | 2026-11-08T15:51:51.572215083Z time=2026-11-08T15:51:51.571Z level=INFO msg="op created" node=node-3 event=op_created op=node-3@1794153086583888145:50 type=REMOVE product=load-0021 quantity=1 now=1003
+node-3-1  | 2026-11-08T15:51:51.586130049Z time=2026-11-08T15:51:51.585Z level=INFO msg="concurrent ops detected" node=node-3 event=concurrent_ops_detected product=load-0018 op=node-4@1794153087114703424:54 concurrent_with=node-3@1794153086583888145:49
+node-3-1  | 2026-11-08T15:51:51.586642240Z time=2026-11-08T15:51:51.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=0 pushed=1
+node-3-1  | 2026-11-08T15:51:51.587150138Z time=2026-11-08T15:51:51.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=2 pushed=3
+node-3-1  | 2026-11-08T15:51:52.117441052Z time=2026-11-08T15:51:52.117Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-4 applied=3
+node-3-1  | 2026-11-08T15:51:52.399019954Z time=2026-11-08T15:51:52.398Z level=INFO msg="ops received" node=node-3 event=ops_received peer=node-2 applied=2
+node-3-1  | 2026-11-08T15:51:52.586784055Z time=2026-11-08T15:51:52.586Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-4 applied=2 pushed=0
+node-3-1  | 2026-11-08T15:51:52.587215195Z time=2026-11-08T15:51:52.587Z level=INFO msg="anti-entropy exchange" node=node-3 event=anti_entropy_success peer=node-2 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:45.851768957Z time=2026-11-08T15:51:45.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=2
+node-4-1  | 2026-11-08T15:51:46.117496498Z time=2026-11-08T15:51:46.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=1
+node-4-1  | 2026-11-08T15:51:46.117520903Z time=2026-11-08T15:51:46.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=3
+node-4-1  | 2026-11-08T15:51:46.418744751Z time=2026-11-08T15:51:46.418Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:43 type=ADD product=load-0009 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:46.586667060Z time=2026-11-08T15:51:46.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-4-1  | 2026-11-08T15:51:46.850456233Z time=2026-11-08T15:51:46.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=1
+node-4-1  | 2026-11-08T15:51:47.117159704Z time=2026-11-08T15:51:47.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=0
+node-4-1  | 2026-11-08T15:51:47.117997522Z time=2026-11-08T15:51:47.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=2 pushed=3
+node-4-1  | 2026-11-08T15:51:47.134914817Z time=2026-11-08T15:51:47.134Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:44 type=ADD product=load-0037 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:47.323433648Z time=2026-11-08T15:51:47.323Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:45 type=ADD product=load-0017 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:47.587044201Z time=2026-11-08T15:51:47.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-4-1  | 2026-11-08T15:51:47.695689812Z time=2026-11-08T15:51:47.695Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:46 type=ADD product=load-0017 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:47.735743866Z time=2026-11-08T15:51:47.735Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:47 type=ADD product=load-0028 quantity=1 now=1004
+node-4-1  | 2026-11-08T15:51:47.850584247Z time=2026-11-08T15:51:47.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=1
+node-4-1  | 2026-11-08T15:51:48.029637351Z time=2026-11-08T15:51:48.029Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:48 type=REMOVE product=load-0044 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:48.117034562Z time=2026-11-08T15:51:48.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=1
+node-4-1  | 2026-11-08T15:51:48.117262952Z time=2026-11-08T15:51:48.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=6
+node-4-1  | 2026-11-08T15:51:48.586791790Z time=2026-11-08T15:51:48.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=2
+node-4-1  | 2026-11-08T15:51:48.848404607Z time=2026-11-08T15:51:48.848Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:49 type=ADD product=load-0025 quantity=1 now=1003
+node-4-1  | 2026-11-08T15:51:48.850511403Z time=2026-11-08T15:51:48.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=3
+node-4-1  | 2026-11-08T15:51:48.968428488Z time=2026-11-08T15:51:48.968Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:50 type=REMOVE product=load-0026 quantity=1 now=999
+node-4-1  | 2026-11-08T15:51:49.117987024Z time=2026-11-08T15:51:49.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=5
+node-4-1  | 2026-11-08T15:51:49.118002398Z time=2026-11-08T15:51:49.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=2
+node-4-1  | 2026-11-08T15:51:49.586903934Z time=2026-11-08T15:51:49.586Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0047 op=node-3@1794153086583888145:44 concurrent_with=node-2@1794153087395914662:34
+node-4-1  | 2026-11-08T15:51:49.586925018Z time=2026-11-08T15:51:49.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=1
+node-4-1  | 2026-11-08T15:51:49.850852877Z time=2026-11-08T15:51:49.850Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0049 op=node-2@1794153087395914662:37 concurrent_with=node-1@1794153086848470290:94
+node-4-1  | 2026-11-08T15:51:49.850876317Z time=2026-11-08T15:51:49.850Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=5
+node-4-1  | 2026-11-08T15:51:50.117398166Z time=2026-11-08T15:51:50.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=0
+node-4-1  | 2026-11-08T15:51:50.118043082Z time=2026-11-08T15:51:50.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=4
+node-4-1  | 2026-11-08T15:51:50.121619383Z time=2026-11-08T15:51:50.121Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:51 type=ADD product=load-0045 quantity=1 now=1000
+node-4-1  | 2026-11-08T15:51:50.586578377Z time=2026-11-08T15:51:50.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-4-1  | 2026-11-08T15:51:50.837195122Z time=2026-11-08T15:51:50.836Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:52 type=REMOVE product=load-0026 quantity=1 now=998
+node-4-1  | 2026-11-08T15:51:50.852068578Z time=2026-11-08T15:51:50.851Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0018 op=node-1@1794153086848470290:96 concurrent_with=node-3@1794153086583888145:45
+node-4-1  | 2026-11-08T15:51:50.860377037Z time=2026-11-08T15:51:50.851Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0038 op=node-1@1794153086848470290:97 concurrent_with=node-3@1794153086583888145:46
+node-4-1  | 2026-11-08T15:51:50.860399420Z time=2026-11-08T15:51:50.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=4
+node-4-1  | 2026-11-08T15:51:51.117425615Z time=2026-11-08T15:51:51.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=1 pushed=0
+node-4-1  | 2026-11-08T15:51:51.118127895Z time=2026-11-08T15:51:51.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=1 pushed=3
+node-4-1  | 2026-11-08T15:51:51.224114565Z time=2026-11-08T15:51:51.223Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:53 type=ADD product=load-0025 quantity=1 now=1004
+node-4-1  | 2026-11-08T15:51:51.273280335Z time=2026-11-08T15:51:51.272Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:54 type=ADD product=load-0018 quantity=1 now=1002
+node-4-1  | 2026-11-08T15:51:51.586764352Z time=2026-11-08T15:51:51.586Z level=INFO msg="concurrent ops detected" node=node-4 event=concurrent_ops_detected product=load-0018 op=node-3@1794153086583888145:49 concurrent_with=node-4@1794153087114703424:54
+node-4-1  | 2026-11-08T15:51:51.586777133Z time=2026-11-08T15:51:51.586Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-3 applied=3
+node-4-1  | 2026-11-08T15:51:51.851914077Z time=2026-11-08T15:51:51.851Z level=INFO msg="ops received" node=node-4 event=ops_received peer=node-1 applied=1
+node-4-1  | 2026-11-08T15:51:52.025284931Z time=2026-11-08T15:51:52.024Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:55 type=REMOVE product=load-0010 quantity=1 now=1004
+node-4-1  | 2026-11-08T15:51:52.095874887Z time=2026-11-08T15:51:52.095Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:56 type=ADD product=load-0019 quantity=1 now=1004
+node-4-1  | 2026-11-08T15:51:52.117415029Z time=2026-11-08T15:51:52.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-3 applied=0 pushed=3
+node-4-1  | 2026-11-08T15:51:52.117625459Z time=2026-11-08T15:51:52.117Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=3 pushed=2
+node-4-1  | 2026-11-08T15:51:52.148700296Z time=2026-11-08T15:51:52.148Z level=INFO msg="op created" node=node-4 event=op_created op=node-4@1794153087114703424:57 type=REMOVE product=load-0039 quantity=1 now=1001
+node-4-1  | 2026-11-08T15:51:53.116900905Z time=2026-11-08T15:51:53.116Z level=INFO msg="anti-entropy exchange" node=node-4 event=anti_entropy_success peer=node-1 applied=2 pushed=0

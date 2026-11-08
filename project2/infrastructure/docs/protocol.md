@@ -77,7 +77,8 @@ Bodies are limited to 8 MiB (413) and must be one JSON value with exactly matchi
 
 `/debug/metrics` is the lightweight view used by experiment scripts. It
 returns `node`, `replica`, `uptime_seconds`, a `counters` object, the gauges
-`pending_ops`, `applied_ops` and `tombstones`, the vector `clock`, the visible
+`pending_ops`, `applied_ops` and `tombstones`, the vector `clock` with its size
+(`clock_entries`, and `clock_bytes` as encoded JSON), the visible
 `quantities`, and each neighbor's monitor `peers` state.
 
 Counters are cumulative and are reset only by a node restart:

@@ -1,0 +1,30 @@
+{
+  "seed": 100,
+  "targets": [
+    "http://127.0.0.1:8001",
+    "http://127.0.0.1:8002",
+    "http://127.0.0.1:8003",
+    "http://127.0.0.1:8004",
+    "http://127.0.0.1:8005",
+    "http://127.0.0.1:8006",
+    "http://127.0.0.1:8007",
+    "http://127.0.0.1:8008"
+  ],
+  "rate_ops_per_second": 20,
+  "concurrency": 4,
+  "warmup_seconds": 10,
+  "duration_seconds": 60,
+  "started_unix_nano": 1794153936021490293,
+  "recorded_from_unix_nano": 1794153946021490293,
+  "recorded_to_unix_nano": 1794154005958033899,
+  "last_write_unix_nano": 1794154005957959152,
+  "requests": 1399,
+  "recorded": 1198,
+  "errors": 0,
+  "status_counts": {
+    "201": 1399
+  },
+  "bootstrap_ops": 50,
+  "bootstrap_errors": 0,
+  "completed": true
+}

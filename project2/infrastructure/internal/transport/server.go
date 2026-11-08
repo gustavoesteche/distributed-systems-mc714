@@ -83,6 +83,8 @@ type metricsResponse struct {
 	AppliedOps    int                      `json:"applied_ops"`
 	Tombstones    int                      `json:"tombstones"`
 	Clock         clock.VC                 `json:"clock"`
+	ClockEntries  int                      `json:"clock_entries"`
+	ClockBytes    int                      `json:"clock_bytes"`
 	Quantities    map[string]int           `json:"quantities"`
 	Peers         []replication.PeerStatus `json:"peers"`
 }
@@ -159,6 +161,9 @@ func (s *server) debug(w http.ResponseWriter, r *http.Request) {
 // decide whether every replica has converged.
 func (s *server) metricsSnapshot(w http.ResponseWriter, r *http.Request) {
 	stats := s.replica.Stats()
+	// clock_bytes is the JSON size of the clock, the metadata every op and
+	// every pull request carries; it grows with each replica that ever wrote.
+	clockJSON, _ := json.Marshal(stats.Clock)
 	writeJSON(w, http.StatusOK, metricsResponse{
 		Node:          stats.NodeID,
 		Replica:       stats.ReplicaID,
@@ -168,6 +173,8 @@ func (s *server) metricsSnapshot(w http.ResponseWriter, r *http.Request) {
 		AppliedOps:    stats.Applied,
 		Tombstones:    stats.Tombstones,
 		Clock:         stats.Clock,
+		ClockEntries:  len(stats.Clock),
+		ClockBytes:    len(clockJSON),
 		Quantities:    stats.Quantities,
 		Peers:         s.engine.PeerStatuses(),
 	})
