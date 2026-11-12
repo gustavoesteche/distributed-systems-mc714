@@ -25,6 +25,8 @@ plt.rcParams.update({"font.size": 8, "figure.figsize": (3.4, 2.1), "axes.grid": 
                      "grid.alpha": 0.3, "savefig.bbox": "tight"})
 
 
+AZUL, LARANJA, VERDE = "tab:blue", "tab:orange", "tab:green"
+
 def num(v):
     try:
         x = float(v)
@@ -33,13 +35,28 @@ def num(v):
     return None if math.isnan(x) else x
 
 
+# Valores críticos bilaterais 95% da t de Student, t_{0,975; gl}, gl = n-1.
+# Com poucas repetições por configuração, o 1,96 da normal subestima o IC.
+_T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306,
+         9: 2.262, 10: 2.228, 11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145, 15: 2.131,
+         16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093, 20: 2.086, 25: 2.060, 30: 2.042,
+         40: 2.021, 60: 2.000, 120: 1.980}
+
+
+def t975(df: int) -> float:
+    """t_{0,975; gl}; entre valores tabelados usa o gl menor (conservador)."""
+    if df >= 1000:
+        return 1.960
+    return _T975[max(k for k in _T975 if k <= df)]
+
+
 def stats(values):
     values = [v for v in values if v is not None]
     if not values:
         return float("nan"), float("nan")
     if len(values) == 1:
         return values[0], 0.0
-    return statistics.fmean(values), 1.96 * statistics.stdev(values) / math.sqrt(len(values))
+    return statistics.fmean(values), t975(len(values) - 1) * statistics.stdev(values) / math.sqrt(len(values))
 
 
 def suite_groups(rows, suite, key):
@@ -86,13 +103,13 @@ def main() -> None:
     # Fig. 1: convergência e bytes de relógio por operação vs N.
     fig, ax = plt.subplots()
     xs, ys, es = series(nodes, "convergence_ms", 1 / 1000)
-    ax.errorbar(xs, ys, yerr=es, marker="o", capsize=3, label="convergência (s)")
+    ax.errorbar(xs, ys, yerr=es, marker="o", color=AZUL, capsize=3)
     ax.set_xlabel("número de nós $N$")
-    ax.set_ylabel("convergência (s)", color="C0")
+    ax.set_ylabel("convergência (s)", color=AZUL)
     ax2 = ax.twinx()
     xs, ys, es = series(nodes, "op_clock_bytes_mean")
-    ax2.errorbar(xs, ys, yerr=es, marker="s", color="C1", capsize=3, label="bytes do relógio / op")
-    ax2.set_ylabel("bytes do relógio / op", color="C1")
+    ax2.errorbar(xs, ys, yerr=es, marker="s", color=LARANJA, capsize=3)
+    ax2.set_ylabel("bytes do relógio / op", color=LARANJA)
     ax2.grid(False)
     ax.set_xticks(xs)
     save(fig, "nos.pdf")
@@ -100,28 +117,30 @@ def main() -> None:
     # Fig. 2: mensagens por operação e convergência vs intervalo.
     fig, ax = plt.subplots()
     xs, ys, es = series(interval, "messages_per_op")
-    ax.errorbar(xs, ys, yerr=es, marker="o", capsize=3)
+    ax.errorbar(xs, ys, yerr=es, marker="o", color=AZUL, capsize=3)
     ax.set_xscale("log", base=2)
     ax.set_xticks(xs, [f"{x:g}".replace(".", ",") for x in xs])
     ax.set_xlabel("intervalo de gossip (s)")
-    ax.set_ylabel("mensagens / op", color="C0")
+    ax.set_ylabel("mensagens / op", color=AZUL)
     ax2 = ax.twinx()
     xs, ys, es = series(interval, "convergence_ms", 1 / 1000)
-    ax2.errorbar(xs, ys, yerr=es, marker="s", color="C1", capsize=3)
-    ax2.set_ylabel("convergência (s)", color="C1")
+    ax2.errorbar(xs, ys, yerr=es, marker="s", color=LARANJA, capsize=3)
+    ax2.set_ylabel("convergência (s)", color=LARANJA)
     ax2.grid(False)
     save(fig, "intervalo.pdf")
 
     # Fig. 3: percentis de latência vs carga.
     fig, ax = plt.subplots()
-    for field, label, marker in (("latency_p50_ms", "p50", "o"), ("latency_p95_ms", "p95", "s"),
-                                 ("latency_p99_ms", "p99", "^")):
+    for field, label, marker, color in (("latency_p50_ms", "p50", "o", AZUL),
+                                        ("latency_p95_ms", "p95", "s", LARANJA),
+                                        ("latency_p99_ms", "p99", "^", VERDE)):
         xs, ys, es = series(load, field)
-        ax.errorbar(xs, ys, yerr=es, marker=marker, capsize=3, label=label)
+        ax.errorbar(xs, ys, yerr=es, marker=marker, color=color, capsize=3, label=label)
     ax.set_xlabel("carga oferecida (ops/s)")
     ax.set_ylabel("latência de escrita (ms)")
     ax.set_xticks(xs)
-    ax.legend()
+    # Legenda fora da área do gráfico, acima dos eixos.
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False)
     save(fig, "carga.pdf")
 
     # Tabela: todas as configurações.
@@ -134,10 +153,8 @@ def main() -> None:
         ce = stats([num(r["clock_entries_max"]) for r in members])
         cb = stats([num(r["op_clock_bytes_mean"]) for r in members])
         sh = stats([num(r["op_clock_share"]) for r in members])
-        ok = sum(r.get("converged") == "True" for r in members)
         lines.append(f"{label} & {fmt(c[0] / 1000, c[1] / 1000, 2)} & {fmt(*mp)} & {fmt(*p99, 2)} & "
-                     f"{fmt(*ce, 1)} & {fmt(*cb, 0)} & {fmt(sh[0] * 100, sh[1] * 100, 0)} & "
-                     f"{ok}/{len(members)} \\\\")
+                     f"{fmt(*ce, 1)} & {fmt(*cb, 0)} & {fmt(sh[0] * 100, sh[1] * 100, 0)} \\\\")
 
     for x, m in nodes.items():
         row(f"$N={x}$", m)
@@ -167,7 +184,7 @@ def main() -> None:
         flines.append(f"{names.get(x, x)} & {fmt(dm, de, 2)} & {fmt(rm, re_, 2)} & "
                       f"{max(rec):.2f} \\\\".replace(".", "{,}") if rec else "")
     (OUT / "falhas.tex").write_text("\n".join(flines) + "\n", encoding="utf-8")
-    print(f"figuras e tabelas em {OUT}")
+    print("figuras e tabelas geradas em figs/")
 
 
 if __name__ == "__main__":

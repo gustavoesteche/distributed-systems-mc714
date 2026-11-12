@@ -72,7 +72,7 @@ func New(cfg config.Config, logger *slog.Logger) (*Node, error) {
 	}
 	neighbors := g.Neighbors(cfg.NodeID)
 	logger.Info("configured neighbors", "event", logging.EventConfiguredNeighbors,
-		"neighbors", "["+strings.Join(neighbors, ",")+"]")
+		"neighbors", "["+strings.Join(neighbors, ",")+"]", "fanout", cfg.GossipFanout, "gossip_seed", cfg.GossipSeed)
 
 	n := &Node{cfg: cfg, logger: logger, neighbors: neighbors, replicaID: newReplicaID(cfg.NodeID),
 		metrics: metrics.New()}
@@ -91,8 +91,11 @@ func New(cfg config.Config, logger *slog.Logger) (*Node, error) {
 		Transport:        transportClient,
 		Interval:         cfg.GossipInterval,
 		FailureThreshold: cfg.FailureThreshold,
-		Logger:           logger,
-		Metrics:          n.metrics,
+		Fanout:           cfg.GossipFanout,
+		// Each node gets its own stream; the same GOSSIP_SEED reproduces the run.
+		Seed:    cfg.GossipSeed*1000003 + uint64(cfg.NodeIndex),
+		Logger:  logger,
+		Metrics: n.metrics,
 	})
 	n.server = &http.Server{
 		Handler:           transport.NewServer(n.replica, n.engine, n.metrics),

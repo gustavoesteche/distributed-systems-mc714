@@ -19,6 +19,8 @@ type Config struct {
 	ExtraEdges       int
 	TopologySeed     uint64
 	GossipInterval   time.Duration
+	GossipFanout     int
+	GossipSeed       uint64
 	HTTPAddr         string
 	HTTPTimeout      time.Duration
 	FailureThreshold int
@@ -97,6 +99,16 @@ func Load(getenv func(string) string) (Config, error) {
 
 	if c.GossipInterval, err = duration("GOSSIP_INTERVAL", "1s"); err != nil {
 		return Config{}, err
+	}
+	if c.GossipFanout, err = atoi("GOSSIP_FANOUT", "1"); err != nil {
+		return Config{}, err
+	}
+	if c.GossipFanout < 0 {
+		return Config{}, fmt.Errorf("GOSSIP_FANOUT: %d must be at least 0 (0 = every neighbor)", c.GossipFanout)
+	}
+	gseed := get("GOSSIP_SEED", "1")
+	if c.GossipSeed, err = strconv.ParseUint(gseed, 10, 64); err != nil {
+		return Config{}, fmt.Errorf("GOSSIP_SEED: %q is not a uint64", gseed)
 	}
 	c.HTTPAddr = get("HTTP_ADDR", ":8080")
 	if strings.TrimSpace(c.HTTPAddr) == "" {

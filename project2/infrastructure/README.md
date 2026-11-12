@@ -3,7 +3,7 @@
 A replicated shopping cart: N Go nodes in Docker Compose, each with an in-memory replica. Clients add and remove items at any node; nodes gossip with their neighbors until every cart is identical. Standard library only.
 
 - **Vector clocks** order operations, gate causal delivery, summarize what a replica knows, and detect concurrent ops (`concurrent_ops_detected`).
-- **Epidemic anti-entropy**: every `GOSSIP_INTERVAL` each node runs a push-pull exchange with all its neighbors in a static seeded topology (the chain `node-1 — … — node-N` plus `EXTRA_EDGES` random edges). State is only merged, never overwritten.
+- **Epidemic anti-entropy**: every `GOSSIP_INTERVAL` each node runs a push-pull exchange with `GOSSIP_FANOUT` neighbors drawn at random (seeded) in a static seeded topology (the chain `node-1 — … — node-N` plus `EXTRA_EDGES` random edges). State is only merged, never overwritten.
 - **Experiment instrumentation**: every node exposes counters and a lightweight state view at `/debug/metrics`, and a seeded load generator plus fault-injection harness lives in [`experiments/`](experiments/README.md).
 
 Details: [docs/protocol.md](docs/protocol.md), [docs/architecture.md](docs/architecture.md), [experiments/README.md](experiments/README.md).
@@ -53,6 +53,8 @@ Edit `compose.yaml` directly. To add a node, copy a service, change its `NODE_ID
 | `EXTRA_EDGES` | `1` | random non-chain edges |
 | `TOPOLOGY_SEED` | `42` | seed for the random edges |
 | `GOSSIP_INTERVAL` | `1s` | time between rounds |
+| `GOSSIP_FANOUT` | `1` | neighbors contacted per round, drawn uniformly at random; `0` = every neighbor |
+| `GOSSIP_SEED` | `1` | seed of the peer-selection RNG (each node mixes in its index) |
 | `HTTP_ADDR` | `:8080` | listen address |
 | `HTTP_TIMEOUT` | `2s` | per-request timeout between nodes |
 | `FAILURE_THRESHOLD` | `3` | failures before a peer is logged unreachable |

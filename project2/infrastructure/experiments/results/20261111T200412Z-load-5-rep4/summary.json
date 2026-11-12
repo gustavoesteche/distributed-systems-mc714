@@ -1,0 +1,81 @@
+{
+  "config": {
+    "bootstrap_settle": "7s",
+    "concurrency": 4,
+    "duration": "60s",
+    "extra_edges": 1,
+    "fanout": 1,
+    "fault": "none",
+    "fault_at": 10.0,
+    "fault_node": 3,
+    "gossip_seed": 303,
+    "heal_at": 20.0,
+    "interval": "1s",
+    "jitter_ms": 0,
+    "latency_ms": 0,
+    "nodes": 6,
+    "products": 50,
+    "rate": 5.0,
+    "remove_ratio": 0.2,
+    "seed": 303,
+    "topology_seed": 42,
+    "toxiproxy": false,
+    "warmup": "10s"
+  },
+  "convergence": {
+    "converged": true,
+    "converged_at_unix": 1794427534.6255376,
+    "convergence_ms": 2742.725372314453,
+    "detection_ms": null
+  },
+  "fault": {},
+  "finished_at": "2026-11-11T20:05:34+00:00",
+  "host": {
+    "compose": "5.6.0",
+    "cpu_count": 16,
+    "docker": "29.8.2",
+    "go": "go version go1.26.1 linux/amd64",
+    "image_id": "sha256:e8e2d7a862a65a9c872aacf3875f9286816a3e91d8e2a7f57d6afc8b5040ca79",
+    "machine": "x86_64",
+    "platform": "Linux-6.1.0-1013-oem-x86_64-with-glibc2.35",
+    "processor": "x86_64",
+    "python": "3.10.12",
+    "uname": "Linux gesteche 6.1.0-1013-oem #13-Ubuntu SMP PREEMPT_DYNAMIC Thu May 18 16:45:09 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux"
+  },
+  "load": {
+    "bootstrap_errors": 0,
+    "bootstrap_ops": 50,
+    "completed": true,
+    "concurrency": 4,
+    "duration_seconds": 60,
+    "errors": 0,
+    "last_write_unix_nano": 1794427531882709828,
+    "rate_ops_per_second": 5,
+    "recorded": 302,
+    "recorded_from_unix_nano": 1794427471918989463,
+    "recorded_to_unix_nano": 1794427531882812141,
+    "requests": 354,
+    "seed": 303,
+    "started_unix_nano": 1794427461918989463,
+    "status_counts": {
+      "201": 354
+    },
+    "targets": [
+      "http://127.0.0.1:8001",
+      "http://127.0.0.1:8002",
+      "http://127.0.0.1:8003",
+      "http://127.0.0.1:8004",
+      "http://127.0.0.1:8005",
+      "http://127.0.0.1:8006"
+    ],
+    "warmup_seconds": 10
+  },
+  "name": "load-5-rep4",
+  "run_id": "20261111T200412Z-load-5-rep4",
+  "started_at": "2026-11-11T20:04:12+00:00",
+  "suite": "load",
+  "verification": {
+    "ok": true,
+    "returncode": 0
+  }
+}

@@ -37,6 +37,21 @@ def percentile(values: list[float], p: float) -> float:
     return ordered[lo] + (ordered[hi] - ordered[lo]) * (pos - lo)
 
 
+# Two-sided 95% Student-t critical values t_{0.975, df}, df = n-1. With only a
+# handful of repetitions per configuration the normal 1.96 understates the CI.
+_T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306,
+         9: 2.262, 10: 2.228, 11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145, 15: 2.131,
+         16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093, 20: 2.086, 25: 2.060, 30: 2.042,
+         40: 2.021, 60: 2.000, 120: 1.980}
+
+
+def t975(df: int) -> float:
+    """t_{0.975, df}; between tabulated df uses the next smaller df (conservative)."""
+    if df >= 1000:
+        return 1.960
+    return _T975[max(k for k in _T975 if k <= df)]
+
+
 def mean_ci95(values: list[float]) -> tuple[float, float]:
     if not values:
         return float("nan"), float("nan")
@@ -44,7 +59,7 @@ def mean_ci95(values: list[float]) -> tuple[float, float]:
         return values[0], 0.0
     mean = statistics.fmean(values)
     sd = statistics.stdev(values)
-    return mean, 1.96 * sd / math.sqrt(len(values))
+    return mean, t975(len(values) - 1) * sd / math.sqrt(len(values))
 
 
 def load_run(summary_path: Path) -> dict | None:
@@ -98,6 +113,8 @@ def load_run(summary_path: Path) -> dict | None:
         "interval": config.get("interval"),
         "rate": config.get("rate"),
         "seed": config.get("seed"),
+        # Runs recorded before GOSSIP_FANOUT existed contacted every neighbor (0).
+        "fanout": config.get("fanout", 0),
         "fault": config.get("fault"),
         "fault_node": config.get("fault_node"),
         "latency_ms": config.get("latency_ms"),
@@ -191,6 +208,7 @@ def group_key(row: dict) -> tuple:
         row["rate"],
         row["fault"],
         row["latency_ms"],
+        row.get("fanout", 0),
     )
 
 
@@ -221,6 +239,7 @@ def aggregate(rows: list[dict]) -> list[dict]:
             "rate": key[3],
             "fault": key[4],
             "latency_ms": key[5],
+            "fanout": key[6],
             "runs": len(members),
             "convergence_mean_ms": conv_mean,
             "convergence_ci95_ms": conv_ci,

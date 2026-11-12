@@ -34,13 +34,13 @@ A local op increments the replica's own clock entry and is applied immediately. 
 
 ## Anti-entropy round
 
-Every `GOSSIP_INTERVAL`, for each neighbor P in parallel:
+Every `GOSSIP_INTERVAL`, the node draws `GOSSIP_FANOUT` distinct neighbors uniformly at random (a per-node PCG stream seeded from `GOSSIP_SEED` and the node index, so runs are reproducible; `0` or a fanout ≥ the degree means every neighbor). For each chosen neighbor P, in parallel:
 
 1. Pull: send our clock; P returns its clock and the ops we lack.
 2. Apply them.
 3. Push the ops P lacks, if any.
 
-Received state is only merged through `Apply`, never overwritten.
+Received state is only merged through `Apply`, never overwritten. The failure monitor counts consecutive failures per neighbor only on the rounds that neighbor is actually contacted, so with a small fanout detection takes proportionally more rounds.
 
 ## Endpoints
 

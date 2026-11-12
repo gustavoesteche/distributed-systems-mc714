@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"math/rand/v2"
 	"sort"
 	"sync"
 	"sync/atomic"
@@ -26,8 +27,14 @@ type EngineConfig struct {
 	Transport        Transport
 	Interval         time.Duration
 	FailureThreshold int
-	Logger           *slog.Logger
-	Metrics          *metrics.Registry
+	// Fanout is how many neighbors each round contacts, chosen uniformly at
+	// random without replacement. 0, or a value ≥ the number of neighbors,
+	// contacts every neighbor.
+	Fanout int
+	// Seed seeds the peer-selection RNG, so a run's choices are reproducible.
+	Seed    uint64
+	Logger  *slog.Logger
+	Metrics *metrics.Registry
 }
 
 // PeerResult is the outcome of one exchange in a round.
@@ -55,8 +62,12 @@ type Engine struct {
 	neighbors map[string]bool
 	transport Transport
 	interval  time.Duration
+	fanout    int
 	logger    *slog.Logger
 	metrics   *metrics.Registry
+
+	rngMu sync.Mutex
+	rng   *rand.Rand
 
 	monMu    sync.Mutex
 	monitors map[string]*Monitor
@@ -80,6 +91,8 @@ func NewEngine(cfg EngineConfig) *Engine {
 		neighbors: map[string]bool{},
 		transport: cfg.Transport,
 		interval:  cfg.Interval,
+		fanout:    cfg.Fanout,
+		rng:       rand.New(rand.NewPCG(cfg.Seed, 0x6d63373134)),
 		logger:    logger,
 		metrics:   cfg.Metrics,
 		monitors:  map[string]*Monitor{},
@@ -91,13 +104,41 @@ func NewEngine(cfg EngineConfig) *Engine {
 	return e
 }
 
-// Round runs one push-pull exchange with every neighbor in parallel.
+// selectPeers returns the neighbors contacted this round: all of them when
+// fanout is 0 or covers every neighbor, otherwise fanout distinct neighbors
+// drawn uniformly at random (partial Fisher-Yates), sorted by ID.
+func (e *Engine) selectPeers() []Peer {
+	if e.fanout <= 0 || e.fanout >= len(e.peers) {
+		return e.peers
+	}
+	idx := make([]int, len(e.peers))
+	for i := range idx {
+		idx[i] = i
+	}
+	e.rngMu.Lock()
+	for i := 0; i < e.fanout; i++ {
+		j := i + e.rng.IntN(len(idx)-i)
+		idx[i], idx[j] = idx[j], idx[i]
+	}
+	e.rngMu.Unlock()
+	chosen := idx[:e.fanout]
+	sort.Ints(chosen)
+	out := make([]Peer, len(chosen))
+	for i, k := range chosen {
+		out[i] = e.peers[k]
+	}
+	return out
+}
+
+// Round runs one push-pull exchange, in parallel, with each neighbor chosen
+// by selectPeers.
 func (e *Engine) Round(ctx context.Context) []PeerResult {
+	peers := e.selectPeers()
 	e.metrics.Inc(metrics.GossipRounds)
-	e.metrics.Add(metrics.GossipExchanges, uint64(len(e.peers)))
-	results := make([]PeerResult, len(e.peers))
+	e.metrics.Add(metrics.GossipExchanges, uint64(len(peers)))
+	results := make([]PeerResult, len(peers))
 	var wg sync.WaitGroup
-	for i, p := range e.peers {
+	for i, p := range peers {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
