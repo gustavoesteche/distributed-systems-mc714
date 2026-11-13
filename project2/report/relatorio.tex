@@ -4,8 +4,10 @@
 \usepackage[brazil]{babel}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{float}
 \usepackage{amsmath}
 \usepackage{url}
+\usepackage{todonotes}
 \usepackage[hidelinks]{hyperref}
 \usepackage{siunitx}
 \sisetup{output-decimal-marker={,}, group-separator={.}}
@@ -14,263 +16,157 @@
 
 \begin{document}
 
-\title{Carrinho de Compras Replicado com\\Relógios Vetoriais e Replicação Epidêmica}
+\title{Carrinho de Compras Replicado com Relógios Vetoriais e Replicação Epidêmica}
 
-\author{\IEEEauthorblockN{Gustavo Esteche (RA \texttt{256223}) \quad Lucas Rodrigues (RA \texttt{252615})}
-\IEEEauthorblockA{Repositório: \url{https://gitlab.ic.unicamp.br/XXXX/mc714-trabalho2}\\
-Vídeo: \url{https://XXXX}}}
+\author{\IEEEauthorblockN{Gustavo Esteche (256223) \quad Lucas Rodrigues (252615)}
+\IEEEauthorblockA{Repositório: ??? \\ Vídeo: ???}}
 
 \maketitle
 
+\todo[inline]{COLOCAR UM REPO NO SUBTÍTULO E GRAVAR O VÍDEO!}
+
 \section{Introdução}
-Um carrinho de compras precisa continuar aceitando itens mesmo quando parte do
-sistema está fora do ar. Por isso preferimos disponibilidade a consistência
-forte e adotamos um modelo multi-líder: qualquer nó aceita \texttt{ADD} e
-\texttt{REMOVE} na hora e repassa a operação depois.
+Sistemas de compras precisam que seus serviços de carrinho continuem aceitando itens mesmo quando parte do sistema está fora do ar. Nesse cenário, é desejado escolher o "CA" do teorema "CAP": consistência e disponibilidade. Adotamos também um modelo multi-líder: qualquer nó aceita \texttt{ADD} e \texttt{REMOVE} de itens no carrinho na hora e repassa a operação depois.
 
-Esse modelo traz dois problemas. Primeiro, operações relacionadas precisam ser
-aplicadas na ordem certa, e operações concorrentes precisam ser reconhecidas
-como tal; é para isso que usamos relógios vetoriais com entrega causal, que
-estendem os relógios lógicos de Lamport e conseguem distinguir concorrência de
-causalidade. Segundo, toda operação tem que chegar a todas as réplicas, o que
-resolvemos com replicação epidêmica por anti-entropia. Os dois algoritmos não
-ficam isolados: o relógio vetorial de cada réplica é exatamente o resumo que
-ela manda na anti-entropia para descobrir o que falta a cada lado.
+Esse modelo tem dois problemas principais. Primeiro, operações precisam ser aplicadas na ordem certa, e as concorrentes precisam ser identificadas. Para isso, usamos relógios vetoriais com entrega causal, implementados em cima da teoria dos relógios lógicos de Lamport, que conseguem distinguir concorrência de causalidade.
 
-Implementamos os dois em Go, usando só a biblioteca padrão, e com eles
-montamos um carrinho replicado em $N$ nós, cada um no seu contêiner Docker,
-que aceita escritas em qualquer nó e volta a um estado comum depois de
-partições e reinícios. A correção é verificada por testes automatizados
-(unitários, de integração e ponta a ponta) e por um script que, ao fim de cada
-experimento, confere o estado final de todos os nós contra as propriedades de
-segurança e vivacidade que definimos. Para avaliar o desempenho, medimos tempo
-de convergência, mensagens por operação, latência de escrita e tamanho do
-relógio vetorial, variando número de nós, intervalo de gossip, carga e atraso
-de rede, além de dois cenários de falha.
+O segundo problema é que toda operação tem que chegar a todas as réplicas, e para isso fazemos replicação epidêmica por anti-entropia. Os dois algoritmos trabalham em conjunto, visto que o relógio vetorial de cada réplica é o resumo da anti-entropia para saber quais informações faltam em cada uma.
+
+Ambos os algoritmos foram implementados em Go com a biblioteca padrão. Com eles, montamos um carrinho de $N$ réplicas, cada uma no seu próprio container. O serviço de carrinho aceita operações de escrita de qualquer nó e é capaz de voltar a um estado comum por conta própria depois de partições e restarts.
+
+A corretude dos algoritmos pode ser verificada com testes automatizados (unitários, integração e E2E) e por um script que confere o estado final de todos os nós no fim dos experimentos. Para avaliar o desempenho, foi medido o tempo de convergência, mensagens por operação, latência de escrita e tamanho do relógio vetorial, variando o número $N$ de nós, intervalo de gossip, carga e atraso de rede, além de dois cenários de falha intencionalmente provocada.
 
 \section{Arquitetura}\label{sec:arq}
-Todos os nós rodam o mesmo binário (\texttt{cmd/node}), cada um em um
-contêiner próprio, configurado apenas por variáveis de ambiente do
-\texttt{compose.yaml}. A comunicação é HTTP/JSON pela rede \emph{bridge}
-\texttt{gossip-net}, e cada nó encontra os outros pelo nome
-(\texttt{node-k}) via DNS do Compose. O código está dividido em
-\texttt{clock} (relógio vetorial), \texttt{cart} (réplica e entrega causal),
-\texttt{replication} (rodadas de anti-entropia e monitor de vizinhos),
-\texttt{transport} (servidor e cliente HTTP), \texttt{topology},
-\texttt{metrics} e \texttt{node}. Não reaproveitamos código de terceiros.
+Todas as réplicas rodam o mesmo executável (\texttt{cmd/node}), cada um em um
+container próprio, configurado por variáveis de ambiente do \texttt{compose.yaml}. A comunicação é em HTTP (JSON) pela rede \texttt{gossip-net} em modo bridge, e cada nó encontra os outros pelo nome (\texttt{node-$k$}) via DNS do Compose.
 
-A topologia é fixa e igual em todos os nós: uma cadeia
-$\texttt{node-1}-\dots-\texttt{node-}N$, que garante que o grafo seja conexo,
-mais uma aresta extra sorteada com semente fixa (\texttt{TOPOLOGY\_SEED}=42)
-para encurtar o diâmetro (poderíamos também variar a adição de arestas, mas 
-reduzimos o escopo). Um nó recusa (HTTP 403) gossip de quem não é seu
-vizinho.
+\newpage
+O código está dividido nas seguintes funcionalidades:
 
-Cada vez que um nó sobe ele vira uma nova \emph{encarnação}, com
-identificador \texttt{node-k@<nanossegundos do boot>}. As operações recebem o
-ID \texttt{<encarnação>:<contador>} e cada unidade adicionada recebe
-\texttt{<op>/<i>}. Com isso, um nó reiniciado nunca reutiliza um ID antigo.
+\begin{itemize}
+    \item \texttt{clock}: relógio vetorial
+    \item \texttt{cart}: réplica e entrega causal
+    \item \texttt{replication}: anti-entropia e monitoramento de vizinhos
+    \item \texttt{transport}: servidor e cliente HTTP
+    \item \texttt{topology}: utilitários para representar grafos
+    \item \texttt{metrics}: métricas
+    \item \texttt{node}: código do nó
+\end{itemize}
 
-Sobre a semântica do carrinho: \texttt{ADD(p,q)} cria $q$ unidades do produto
-$p$, e \texttt{REMOVE(p,q)} marca como removidas (\emph{tombstones}) as $q$
-menores unidades vivas de $p$ que a origem conhecia, listando-as na própria
-operação. Se não houver unidades suficientes, a resposta é 409. A quantidade
-de um produto é o número de unidades vivas. Na prática isso é um conjunto
-\emph{observed-remove} em que a adição vence: uma unidade
-adicionada ao mesmo tempo que um \texttt{REMOVE} acontece em outro nó não é
-afetada por ele.
+A topologia é fixa e igual em todos os nós, ou seja, o grafo é conexo, e conta com uma aresta extra aleatoriamente escolhida para encurtar o diâmetro do grafo. Um nó recusa com erro 403 qualquer gossip de não-vizinhos.
 
-\section{Algoritmo 1: relógios vetoriais e entrega causal}\label{sec:alg1}
+Cada vez que um nó sobe ele ganha o label \texttt{node-$k$@<nanossegundos do boot>}. As operações recebem o ID \texttt{<label>:<contador>}.
+
+A semântica do carrinho é bem simples: \texttt{ADD(p, q)} cria $q$ unidades do produto
+$p$, e \texttt{REMOVE(p,q)} marca como removidas (tombstones) as $q$
+menores unidades ``vivas'' de $p$, listando-as na própria operação. Se não houver unidades suficientes, a resposta é 409 Conflict. A quantidade de um produto é o número de unidades ``vivas''. Na prática isso é um conjunto observed remove em que a adição vence concorrências, quando uma unidade é adicionada na mesma hora que um outro nó executa um \texttt{REMOVE} a adição não é afetada por ele.
+
+\section{Algoritmo 1 - relógios vetoriais e entrega causal}\label{sec:alg1}
 \subsection{Funcionamento}
-Cada réplica $i$ guarda um vetor $V_i$ que associa cada encarnação a um
-contador; uma chave ausente vale 0. Ao criar uma operação local, a réplica
-incrementa $V_i[i]$ e anexa uma cópia de $V_i$ à operação. Ao aplicar uma
-operação $m$, faz $V_i \gets \max(V_i, V_m)$ entrada a entrada. Dizemos que
-$V_a < V_b$ quando $V_a \le V_b$ em todas as entradas e os vetores são
-diferentes; se nenhum dos dois é menor que o outro, as operações são
-concorrentes.
+Cada réplica $i$ guarda um vetor $V_i$ que associa cada label a um contador. Se a chave não existe, o valor é assumido como 0. Ao criar uma operação local, a réplica
+incrementa $V_i[i]$ e adiciona uma cópia de $V_i$ à operação. Ao aplicar uma
+operação $m$, atribuimos $V_i = \max(V_i, V_m)$ para cada entrada. Dizemos que
+$V_a < V_b$ quando $V_a \le V_b$ para todas as entradas, e os vetores são
+diferentes. Se nenhum dos dois é menor que o outro, as operações são concorrentes.
 
-Uma operação $m$ vinda da origem $j$ só é aplicada quando
+Uma operação $m$ vinda de $j$ só é aplicada quando
 \begin{equation}
 V_m[j] = V_i[j]+1 \quad\text{e}\quad V_m[k]\le V_i[k]\ \ \forall k\ne j,
 \end{equation}
+
 ou seja, quando ela é a próxima de $j$ e a réplica já viu tudo o que $j$ tinha
 visto. Até lá ela espera em um buffer. Se $V_m[j]\le V_i[j]$, ou se ela já
-está no buffer, é uma duplicata e é descartada. Um \texttt{REMOVE} ainda passa
-por mais uma checagem: cada unidade removida precisa vir de um \texttt{ADD}
-cujo relógio seja $\le V_m$, isto é, a origem precisava conhecer aquela
-unidade. Se não for o caso, a operação é rejeitada. Quando uma operação é
-concorrente com a última aplicada no mesmo produto, o nó registra o evento
-\texttt{concurrent\_ops\_detected}.
+está no buffer, é uma duplicata e é descartada. O \texttt{REMOVE} tem mais uma checagem, cada unidade removida precisa vir de um \texttt{ADD} cujo relógio seja menor ou igual a $V_m$, ou seja, a origem deve conhecer aquela unidade. Se não, a operação é rejeitada. Quando uma operação é concorrente com a última aplicada no mesmo produto, registramos um evento \texttt{concurrent\_ops\_detected}.
 
 \subsection{Modelo do sistema}
-Assumimos um sistema assíncrono. A entrega causal não depende de tempo
-nenhum: ela espera o quanto for preciso pelos predecessores. Os canais podem
-perder, duplicar e reordenar mensagens, e não supomos FIFO; o buffer resolve a
-reordenação e o descarte por contador resolve a duplicação (a perda fica a
-cargo da anti-entropia). Consideramos falhas do tipo crash-recovery sem
-persistência: um nó que reinicia volta com relógio vazio, como uma encarnação
-nova, e por isso ganha uma entrada nova no vetor. Não tratamos falhas
-bizantinas; lotes malformados são recusados por inteiro, mas um nó mal
-intencionado poderia mentir no próprio relógio. Relógios físicos não são
-usados para ordenar nada; o horário do boot serve só para distinguir
-encarnações.
+Assumimos um sistema assíncrono onde a entrega causal não depende do tempo. Ela espera o quanto for preciso pelos predecessores de uma dada operação. Os canais podem perder, duplicar e reordenar mensagens, mas o buffer resolve a reordenação e o descarte por counter resolve a duplicação. A perda fica a cargo da anti-entropia. Não fizemos persistência para crashes, então todo nó que reinicia volta com relógio vazio com uma label nova, então ganha uma nova entrada no vetor. O horário do boot não tem nada a ver com os relógios usados no projeto, é apenas para definir essas labels.
 
 \subsection{Propriedades}
-Uma execução correta satisfaz, como segurança: (S1) nenhuma operação é
-aplicada antes de seus predecessores causais; (S2) cada operação é aplicada no
-máximo uma vez; (S3) os contadores de cada origem aparecem sem lacunas;
-(S4) um \texttt{REMOVE} só remove unidades que sua origem observou; (S5)
-operações pendentes não aparecem nas quantidades, que portanto nunca ficam
-negativas. Como vivacidade: (L1) se os predecessores de uma operação chegam em
-algum momento, ela também é aplicada.
+O objetivo do sistema é assegurar as seguintes propriedades:
+\begin{enumerate}
+    \item nenhuma operação é aplicada antes de predecessores causais
+    \item cada operação só é aplicada uma única vez
+    \item os contadores de cada nó de origem começam sem lacuna alguma
+    \item um \texttt{REMOVE} só remove unidades que seu nó de origem viu
+    \item quantidades nunca ficam negativas
+\end{enumerate}
 
 \subsection{Custo}
-Comparar e mesclar relógios custa $O(E)$, onde $E$ é o número de entradas do
-vetor, e cada operação carrega $O(E)$ bytes de metadados. Sem falhas,
-$E = N$. Como não há coleta de lixo, cada reinício acrescenta uma entrada que
-nunca sai (ver Seção~\ref{sec:lim}).
+Comparar e mesclar relógios tem complexidade temporal $O(E)$, onde $E$ é o tamanho do vetor. Cada operação carrega $O(E)$ bytes de metadados. Sem falhas, idealmente $E = N$. Como não há garbage collection, cada restart adiciona uma entrada que nunca vai sair, então restarts repetidos ad infinitum poderiam esgotar a memória da máquina.
 
-\section{Algoritmo 2: anti-entropia epidêmica}\label{sec:alg2}
+\section{Algoritmo 2 - anti-entropia epidêmica}\label{sec:alg2}
 \subsection{Funcionamento}
-A cada \texttt{GOSSIP\_INTERVAL} $T$, cada nó $i$ sorteia $F$
-(\texttt{GOSSIP\_FANOUT}, $F=1$ por padrão) vizinhos distintos, de forma
-uniforme e sem reposição, e conversa em paralelo com cada sorteado $P$ em
-duas etapas. Na primeira (\emph{pull}), $i$ envia $V_i$ e $P$
-devolve $V_P$ junto com as operações que $i$ ainda não tem, que são as $m$ do
-log de $P$ com $V_m[\text{orig}(m)] > V_i[\text{orig}(m)]$; $i$ aplica essas
-operações pela entrega causal. Na segunda (\emph{push}), $i$ usa $V_P$ para
-calcular o que falta a $P$ e envia, se houver algo. Nenhum estado é
-sobrescrito; tudo passa pelo mesmo \emph{merge}.
+A cada intervalo de gossip $T$, cada nó $i$ sorteia uma quantidade $F$ de vizinhos distintos para fazer o fanout do gossip, uniforme e sem reposição. Para cada sorteado $P$, acontece uma conversa em paralelo, com duas etapas:
 
-O sorteio usa um gerador de números aleatórios próprio de cada nó, semeado
-com \texttt{GOSSIP\_SEED} combinado ao índice do nó, de modo que a sequência
-de parceiros de uma execução é reproduzível. Com $F=0$ ou $F$ maior ou igual
-ao grau, o nó fala com todos os vizinhos em toda rodada.
+\begin{enumerate}
+    \item Na primeira etapa, o pull, $i$ envia $V_i$, e $P$ devolve $V_P$ junto com operações que $i$ ainda não tem (são as $m$ do log de $P$ com $V_m[\mathrm{origem}(m)] > V_i[\mathrm{origem}(m)]$). $i$ então aplica as operações pela entrega causal
+    \item Na segunda, o push, $i$ usa $V_P$ para calcular o que falta em $P$ e, se houver algo, envia. Tudo passa por um único merge para não sobrescrever estados.
+\end{enumerate}
 
-Cada nó também mantém um contador de falhas consecutivas por vizinho,
-atualizado só nas rodadas em que aquele vizinho é sorteado. Ao chegar em três
-(\texttt{FAILURE\_THRESHOLD}), ele registra
-\texttt{gossip\_peer\_unreachable}. Esse monitor serve só para observação e
-não muda o comportamento do protocolo.
+O sorteio usa um RNG próprio de cada nó, com semente configurável combinada ao índice do nó, tornando reprodutível a execução. Se $F=0$ ou $F \ge$ ao grau, o nó fala com todos os vizinhos em toda rodada.
+
+Cada nó também mantém um contador de falhas seguidas por vizinho, atualizado somente nas rodadas em que aquele vizinho é sorteado. Ao chegar em três (configurável, poderia ser qualquer valor inteiro positivo), ele registra uma métrica \texttt{gossip\_peer\_unreachable}, que serve só para observação e não muda o comportamento do sistema.
 
 \subsection{Modelo do sistema}
-A segurança não depende de tempo. Para a vivacidade precisamos de um pouco de
-sincronia: depois que a rede se recupera, as mensagens entre vizinhos têm que
-chegar antes do \emph{timeout}, que é explícito em toda requisição
-(\texttt{HTTP\_TIMEOUT}=2\,s). Os canais são HTTP sobre TCP. Uma troca perdida
-é simplesmente refeita numa rodada seguinte em que o par volte a se sortear, e receber a mesma operação duas
-vezes não tem efeito (S2). Tratamos crash-recovery sem persistência e
-partições de rede. Uma limitação que aceitamos: se um nó cai antes de repassar
-uma operação, ela se perde.
+A segurança do sistema não depende do tempo, porém para a vivacidade precisamos de sincronia: depois que a rede se recupera de alguma falha, as mensagens entre vizinhos têm que chegar antes do timeout das requisições (por padrão, 2 segundos). Os canais são HTTP sobre TCP, então uma troca perdida é simplesmente retentada no futuro caso o mesmo par seja sorteado. Pela propriedade 2, as operações são idempotentes. Tratamos crash recovery sem persistência ou particionamento da rede, com uma limitação que optamos por manter: quando um nó cai antes que a operação seja repassada, ela é perdida.
 
 \subsection{Propriedades}
-Segurança: (S6) o estado só cresce por \emph{merge}; (S7) um lote com qualquer
-operação inválida não altera nada. Vivacidade: (L2) se as escritas param e os
-nós vivos formam um grafo conexo, todas as réplicas chegam, com
-probabilidade 1, ao mesmo log,
-relógio e quantidades; (L3) um nó reiniciado recupera toda operação que algum
-vizinho alcançável ainda tenha; (L4) depois que uma partição é desfeita, os
-dois lados convergem.
+
+\begin{enumerate}
+    \setcounter{enumi}{5}
+    \item o estado só cresce por merge
+    \item operações inválidas são no-op
+    \item se escritas param e os nós vivos são conexos, todas as réplicas garantidamente convergem
+    \item um nó reiniciado recupera toda operação que seus vizinhos têm
+    \item quando uma partição é removida os dois lados convergem
+\end{enumerate}
 
 \subsection{Custo}
-Em cada rodada um nó faz $F$ trocas, com uma ou duas mensagens cada, ou
-seja, o cluster gera no máximo $2NF/T$ mensagens por segundo,
-independentemente da carga. Cada troca carrega o relógio, de tamanho $O(E)$,
-mais as operações que faltam. Como a troca é \emph{push-pull}, uma aresta
-$(i,j)$ é usada numa rodada se $i$ sorteia $j$ ou $j$ sorteia $i$, o que, com
-$F=1$, acontece com probabilidade
-$p_{ij}=1-(1-1/d_i)(1-1/d_j)$, sendo $d$ o grau ($p=3/4$ num anel). Cada
-salto leva então em média $T/p$, e uma operação precisa atravessar até $D$
-saltos, sendo $D$ o diâmetro; esperamos convergência da ordem de $D\,T/p$,
-com cauda maior que no caso determinístico porque o último nó a receber é o
-máximo de vários caminhos aleatórios. Com a cadeia mais uma aresta,
-$D\le N-1$.
+Em cada etapa um nó faz $F$ trocas, com uma ou duas mensagens cada. Ou seja, o cluster gera no máximo $2NF/T$ mensagens por segundo, independentemente da carga. Cada troca carrega o relógio de tamanho $O(E)$ mais as operações que faltam. Como a troca é push/pull, uma aresta $(i,j)$ é usada numa etapa se $i$ sorteia $j$ ou $j$ sorteia $i$. SOb a restrição $F = 1$, isso acontece com probabilidade $p_{ij}=1-(1-1/d_i)(1-1/d_j)$, sendo $d$ o grau ($p=3/4$ num grafo anel). Cada salto leva em média $T/p$ e uma operação precisa fazer até $D$ saltos, sendo $D$ o diâmetro. A convergência esperada é da ordem de $DT/p$, com cauda maior que no caso determinístico porque o último nó a receber é o máximo entre vários caminhos aleatórios. Com a cadeia mais uma aresta, $D \le N-1$.
 
 \section{Verificação da correção}\label{sec:ver}
-Os testes automatizados (\texttt{go test ./...}, também com \texttt{-race})
-cobrem o relógio vetorial (ordem, \emph{merge}, ausência de efeitos
-colaterais) e vários casos da entrega causal: \texttt{REMOVE} que chega antes
-do \texttt{ADD} fica no buffer, lacuna de contador fica no buffer, reaplicar é
-inofensivo, um lote inválido não muda nada, remover unidade não observada é
-rejeitado, \texttt{ADD} concorrente sobrevive ao \texttt{REMOVE} e dois
-\texttt{REMOVE}s concorrentes colapsam. Há também testes do sorteio de parceiros (uniforme,
-sem repetição e reproduzível pela semente), um teste aleatorizado de
-convergência e testes de integração com vários nós em processo (cadeia, push
-duplicado, concorrência, reinício, vizinho fora do ar, topologia aleatória).
-O teste ponta a ponta (\texttt{just e2e}) sobe quatro contêineres de verdade e
-passa por propagação, partição e reinício.
+Os testes executáveis via \texttt{go test ./...} cobrem o relógio vetorial e vários casos da entrega causal. Dentre os cenários testados, temos garantias que \texttt{REMOVE} que chega antes do \texttt{ADD} fica no buffer, lacuna de contador fica no buffer, é idempotente, operação inválida é no-op, remover unidade não observada é rejeitado, \texttt{ADD} concorrente sobrevive ao \texttt{REMOVE} e dois
+\texttt{REMOVE}s concorrentes viram um só. Temos também testes do sorteio de pares, de convergência, e de integração com vários nós em diversas situações distintas. O teste E2E (executável via \texttt{just e2e}) sobe quatro containers e passa por propagação, particionamento e restart.
 
-Além disso, ao fim de cada experimento o script \texttt{verify.py} lê o
-estado completo de cada nó (\texttt{/debug/state}, que inclui o log de
-operações) e confere: contadores contíguos por origem (S3); todo predecessor
-causal aparece antes no log (S1); \texttt{REMOVE}s só sobre unidades
-observadas (S4); quantidades recalculadas a partir do log batem com as
-reportadas; nenhuma operação pendente; e todos os nós iguais (L2--L4).
-Nas 71 execuções da Seção~\ref{sec:res}, inclusive as com partição e reinício,
-todas essas verificações passaram e nenhum \texttt{REMOVE} foi rejeitado.
+Além disso, no fim de cada experimento, o script \texttt{verify.py} lê o
+estado completo de cada nó (via \texttt{/debug/state} e que inclui o log de
+operações) e confere as condições descritas nas seções de propriedades dos dois algoritmos. Em todas as 71 execuções (Seção~\ref{sec:res}), essas verificações passaram sem rejeição de \texttt{REMOVE}s.
 
 \section{Metodologia experimental}\label{sec:met}
 \subsection{Ambiente}
-Todos os dados vem de uma única máquina: Intel Core i5-13450HX (16 \emph{threads}),
-16\,GB de RAM, Ubuntu 22.04.5 com kernel 6.1.0-1013-oem, Docker 29.8.2,
-Compose v5.6.0, Go 1.26.1 e Python 3.10.12. Vale lembrar que contêineres na
-mesma máquina são nós lógicos, mas não falham de forma independente:
-dividem CPU, kernel e uma rede local quase sem latência. Por isso os tempos
-medidos são otimistas em relação a uma implementação real.
+Todos os dados vêm de uma mesma máquina, com processador Intel Core i5-13450HX de 16 threads, 16 GB de RAM, rodando Ubuntu 22.04.5 com kernel 6.1.0-1013-oem, dentro de containeres Docker 29.8.2 com Compose v5.6.0 rodando Go 1.26.1 e Python 3.10.12. Apesar dos containeres na mesma máquina serem nós lógicos, não falham de forma independente, porque dividem CPU, kernel e rede local com latência $\to 0$. Consideremos, portanto, que as medições são otimistas em relação a uma implementação real.
 
 \subsection{Procedimento}
 O script \texttt{run.py} gera um \texttt{compose.yaml} com $N$ nós, sobe o
-cluster e dispara o gerador de carga (\texttt{cmd/loadgen}, com semente
-registrada e \emph{timeout} de 2\,s por requisição). Em seguida injeta a falha,
-se houver, consulta \texttt{/debug/metrics} a cada 200\,ms até o cluster
-convergir, salva CSV, JSON e logs brutos e roda o \texttt{verify.py}. A carga
-tem taxa constante, é distribuída entre os nós e usa 50 produtos, 20\% de
-\texttt{REMOVE} e estoque inicial de 1000 unidades por produto. Cada execução
-tem 10\,s de aquecimento, descartados, e 60\,s medidos. Repetimos cada
-configuração cinco vezes com sementes diferentes (a mesma semente alimenta o
-gerador de carga e o sorteio de parceiros do gossip) e reportamos média com
+cluster e dispara o gerador de carga (\texttt{cmd/loadgen}) com timeout de 2 s por requisição. Em seguida injeta a falha, se houver, consulta \texttt{/debug/metrics} a cada 200 ms até o cluster convergir, salva CSV, JSON e logs brutos e roda o \texttt{verify.py}. A carga tem taxa constante, é distribuída entre os nós e usa 50 produtos, 20\% de \texttt{REMOVE}s e estoque inicial de 1000 unidades por produto. Cada execução tem warmup de 10 segundos (descartados), e 60 segundos medidos. Repetimos cada configuração cinco vezes com seeds diferentes (a mesma seed inicializa o gerador de carga e o sorteio de parceiros do gossip) e reportamos média com
 intervalo de confiança de 95\% pela distribuição $t$ de Student
 ($t_{0{,}975;\,n-1}\,s/\sqrt{n}$, com $t_{0{,}975;4}=2{,}776$ para $n=5$), além
 de percentis.
 
 \subsection{Métricas}
-Para a replicação, a métrica principal é o \emph{tempo de convergência}:
-quanto tempo passa entre o fim da carga (ou a cura da falha) e o momento em
-que todos os nós têm o mesmo relógio, o mesmo número de operações, as mesmas
-quantidades e nenhuma pendência. Ela mede diretamente L2--L4. Também medimos
-\emph{mensagens por operação}, que mostra o custo de disseminação, e a
-\emph{latência de escrita} percebida pelo cliente (p50, p95 e p99, só das
-respostas 201). Para o relógio vetorial, medimos o seu \emph{tamanho}: o
-número de entradas $E$, os bytes do relógio em cada operação e a fração dos
-bytes de cada operação que vai para ele. Isso mostra quanto de metadado o
-Algoritmo~1 acrescenta. Nos cenários de falha medimos ainda o \emph{tempo de
-detecção}, da falha até algum vizinho marcar o nó como inalcançável.
+Para a replicação, a métrica principal é o tempo de convergência, ou seja, quanto tempo passa entre o fim da carga (ou a recuperação da falha) e o momento em
+que todos os nós têm o mesmo relógio, o mesmo número de operações e as mesmas
+quantidades sem qualquer propagação de informação pendente. Também medimos
+mensagens por operação, que mostra o custo de propagação, e a latência de escrita percebida pelo cliente (p50, p95 e p99, contando somente respostas 201). Para o relógio vetorial, medimos o seu tamanho, o número de entradas $E$, os bytes do relógio em cada operação e a porcentagem dos bytes de cada operação que vai para ele. Isso mostra quanto de metadado o Algoritmo 1 adiciona. Nos cenários de falha medimos ainda o tempo de detecção da falha até algum vizinho marcar como inalcançável.
 
 \subsection{Parâmetros}
-Variamos um parâmetro por vez, sempre em três níveis: número de nós
-($N=4,6,8$); intervalo de gossip (250\,ms, 1\,s e 4\,s); carga (5, 20 e 50
-ops/s); e latência injetada com Toxiproxy em todos os enlaces de gossip (0, 50
-e 150\,ms, com 10\,ms de \emph{jitter}). Fora o parâmetro variado, usamos
-$N=6$, intervalo de 1\,s, 20 ops/s e $F=1$ em todas as execuções. Nos cenários de falha, com $N=6$, o nó 3
-é desconectado da rede (partição) ou parado (\texttt{docker compose stop})
-aos 20\,s, e reconectado ou religado aos 40\,s.
+Variamos um parâmetro por vez, sempre em três níveis, começando pelo número de nós
+($N=4,6,8$), depois intervalo de gossip (250\,ms, 1\,s e 4\,s), depois carga (5, 20 e 50 ops/s), e por fim latência injetada (via Toxiproxy) em todos os links de gossip (0, 50 e 150\,ms, com 10\,ms de jitter). Fora o parâmetro variado, usamos $N=6$, intervalo de 1\,s, 20 operações/s e $F=1$ em todas as execuções. Nos cenários de falha, com $N=6$, o nó 3 é desconectado da rede (partição) ou parado pelo Docker aos 20\,s e reiniciado aos 40\,s.
 
 \subsection{Dados e reprodução}
 Todos os dados brutos estão no repositório do projeto, uma pasta por
 execução. Cada pasta guarda o \texttt{compose.yaml}
-gerado, uma linha por requisição do cliente (\texttt{requests.csv}: nó, tipo,
+gerado, uma linha por requisição do cliente (em \texttt{requests.csv}, com nó, tipo,
 status, latência e horários), o resumo da carga, as métricas finais
-(\texttt{metrics-node-k.json}) e o estado completo de cada nó
-(\texttt{state-node-k.json}, com o log de operações), os logs do cluster com
+(\texttt{metrics-node-$k$.json}) e o estado completo de cada nó
+(\texttt{state-node-$k$.json}, com o log de operações), os logs do cluster com
 horário, o resultado do \texttt{verify.py} e um \texttt{summary.json} com a
-configuração, as sementes, os instantes da falha, a convergência e os dados
+configuração, as seeds, os instantes da falha, a convergência e os dados
 da máquina. O \texttt{analyze.py} consolida tudo em
 \texttt{runs.csv} (uma linha por execução) e \texttt{aggregate.csv} (média e
 IC por configuração), e o \texttt{figuras.py} gera as tabelas e figuras deste
 relatório a partir do \texttt{runs.csv}. Para refazer tudo basta rodar
-\texttt{just exp-all}, \texttt{just analyze} e \texttt{figuras.py}. Os valores absolutos
-dependem da máquina; as tendências são o que esperamos reproduzir.
+\texttt{just exp-all}, \texttt{just analyze} e \texttt{figuras.py}. Os valores absolutos dependem da máquina.
 
 \section{Resultados}\label{sec:res}
 \begin{table*}[t]
@@ -289,12 +185,10 @@ Configuração & Conv. (s) & msg/op & p99 (ms) & $E$ & B/op & \%op \\
 \end{tabular}
 \end{table*}
 
-A Tabela~\ref{tab:res} resume as 71 execuções (70 da matriz mais um teste
-rápido); os valores por execução estão em \texttt{runs.csv}.
-Todas convergiram e todas passaram na verificação de estado.
+A Tabela~\ref{tab:res} resume as 71 execuções, e os valores por execução estão em \texttt{runs.csv}. Todas convergiram e todas passaram na verificação de estado.
 
 \subsection{Número de nós}
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figs/nos.pdf}
 \caption{Convergência (azul) e bytes do relógio vetorial por operação
@@ -307,41 +201,28 @@ $N$: pelos logs (\texttt{configured\_neighbors}), com a semente 42 a aresta
 extra fecha um anel para $N=4$ e $N=6$ (diâmetro $D=2$ e $3$), mas para $N=8$
 ela liga \texttt{node-1} a \texttt{node-3} e o grafo continua quase uma
 cadeia, com $D=6$. Somando $T/p_{ij}$ ao longo do caminho mais longo
-(Seção~\ref{sec:alg2}), o modelo prevê 2,7, 4,0 e 8,0\,s; os valores medidos
+(Seção~\ref{sec:alg2}), o modelo prevê 2,7, 4,0 e 8,0\,s, os valores medidos
 ficam entre 0,61 e 0,74 dessa previsão, ou seja, a convergência acompanha o
-diâmetro e a probabilidade de uso de cada aresta, como esperado. O fator fica
+diâmetro e a probabilidade de uso de cada aresta, como esperavamos. O fator fica
 abaixo de 1 porque as rodadas dos nós não são sincronizadas e uma operação
-pode andar mais de um salto por intervalo (um nó pode fazer \emph{pull} e
-logo depois ser sorteado pelo \emph{push} de outro). O sorteio também aumenta
-a variabilidade: os ICs ficam entre 23\% e 34\% da média.
+pode andar mais de um salto por intervalo (um nó pode fazer pull e logo depois ser sorteado pelo push de outro). O sorteio também aumenta a variabilidade: os ICs ficam entre 23\% e 34\%, em média.
 
-Já o relógio vetorial cresce com $N$ e não com $D$: $E=N$ em todas as
-execuções sem falha, e os bytes do relógio por operação foram 127, 187 e 244,
-cerca de 30 bytes por entrada (a chave \texttt{node-k@<19 dígitos>} domina).
-Isso é 42\%, 51\% e 58\% de cada operação, que tem de 300 a 420 bytes em
-JSON. Para um carrinho com poucos itens por operação, o relógio já é o maior
-componente da mensagem, e o custo $O(N)$ por operação seria o primeiro
-problema a escalar. As mensagens de gossip por operação (0,5, 0,7 e 1,0)
-crescem com $N$ porque há $N$ nós sorteando parceiros a cada rodada.
+O relógio vetorial, por sua vez, cresce em função de $N$ e não de $D$. Na verdade, $E=N$ em todas as execuções sem falha, e os bytes do relógio por operação foram 127, 187 e 244, cerca de 30 bytes por entrada (a chave \texttt{node-$k$@<19 dígitos>} sendo a dominante). Isso é 42\%, 51\% e 58\% de cada operação, que tem de 300 a 420 bytes em
+JSON. Para um carrinho com poucos itens por operação, o relógio se torna o maior
+componente da mensagem e o custo $O(N)$ por operação seria o primeiro problema a aparecer quando escalar. As mensagens de gossip por operação (0,5, 0,7 e 1,0) crescem em função de $N$ porque há $N$ nós sorteando parceiros a cada rodada.
 
 \subsection{Intervalo de gossip}
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figs/intervalo.pdf}
 \caption{Mensagens por operação (azul) e convergência (laranja) para
 intervalos de 0,25, 1 e 4\,s, $N=6$. Eixo $x$ em escala log.}
 \label{fig:int}
 \end{figure}
-Aqui aparece o compromisso clássico da anti-entropia (Fig.~\ref{fig:int}).
-Com o intervalo 16 vezes maior (0,25\,s $\to$ 4\,s), as mensagens por operação
-caem de 2,4 para 0,2 e a convergência sobe de 0,68\,s para 9,65\,s. As duas
-grandezas variam quase proporcionalmente ao intervalo, porque o número de
-trocas por segundo é fixo ($N F/T$) e a convergência fica em
-$0{,}60$--$0{,}68$ de $D\,T/p$ ($=4T$ para o anel de seis nós) nos três
-níveis. O tamanho do relógio não muda com o intervalo.
+Aqui aparece o compromisso da anti-entropia (Fig.~\ref{fig:int}). Com o intervalo 16 vezes maior (0,25\,s $\to$ 4\,s), as mensagens por operação caem de 2,4 para 0,2 e a convergência sobe de 0,68\,s para 9,65\,s. As duas grandezas variam quase proporcionalmente ao intervalo, porque o número de trocas por segundo é fixo ($N F/T$) e a convergência fica em $0{,}60$--$0{,}68$ de $D\,T/p$ ($=4T$ para o anel de seis nós) nos três níveis. O tamanho do relógio não muda com o intervalo.
 
 \subsection{Carga}
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figs/carga.pdf}
 \caption{Percentis de latência de escrita vistos pelo cliente em função da
@@ -349,36 +230,26 @@ carga, $N=6$.}
 \label{fig:carga}
 \end{figure}
 A latência de escrita ficou abaixo de 2,1\,ms no p99 em todas as cargas
-(Fig.~\ref{fig:carga}), com p50 em torno de 1,1\,ms. Isso é esperado: a
+(Fig.~\ref{fig:carga}), com p50 em torno de 1,1\,ms. Isso é esperado, porque a
 escrita é aplicada localmente e respondida na hora, sem esperar nenhum outro
-nó; a replicação acontece depois, em segundo plano. Com a carga, o custo de
+nó. A replicação acontece depois, em background. Com a carga, o custo de
 mensagens por operação cai (2,6 $\to$ 0,7 $\to$ 0,3) porque as rodadas
 acontecem de qualquer jeito e são amortizadas por mais operações. Os bytes
-de gossip por operação também caem, de 1423 para 1083 e 980, mas bem menos:
-o relógio enviado em cada \emph{pull} é amortizado, porém cada operação
-continua atravessando todos os enlaces do grafo. A convergência ficou entre
-2,4 e 3,1\,s, com ICs que se sobrepõem. Já o número de operações concorrentes
-detectadas pelo relógio vetorial cresceu bastante com a carga (173, 2150 e
-8379 por execução, em média), sem nenhuma rejeição.
+de gossip por operação também caem de 1423 para 1083 e 980, mas bem menos,
+o relógio enviado em cada pull é amortizado, porém cada operação continua atravessando todos os links do grafo. A convergência ficou entre 2,4 e 3,1\,s, com ICs sobrepostos. Já o número de operações concorrentes detectadas pelo relógio vetorial cresceu bastante em função da carga (173, 2150 e 8379 por execução, em média), sem rejeições.
 
 \subsection{Atraso de rede}
-Com Toxiproxy acrescentando 50 ou 150\,ms (mais 10\,ms de \emph{jitter}) às
-respostas de todo enlace de gossip, a convergência foi 2,85, 3,77 e 3,48\,s
-para 0, 50 e 150\,ms. Não há tendência monotônica e os ICs se sobrepõem: a
-variação vinda do sorteio de parceiros é maior que o efeito do atraso. Uma
-troca completa (\emph{pull} + \emph{push}) leva no máximo $2\times150$\,ms,
+Com o Toxiproxy adicionando 50 ou 150\,ms (mais 10\,ms de jitter) a todas as respostas dos enlaces de gossip, a convergência foi 2,85, 3,77 e 3,48\,s para 0, 50 e 150\,ms respectivamente. A variação vinda do sorteio de parceiros é maior que o efeito do atraso. Uma troca completa (pull e push) leva no máximo $2\times150$\,ms,
 bem menos que o intervalo de 1\,s, então o atraso só desloca um pouco o
 momento em que cada salto termina. Esperamos que o efeito apareça quando o
-atraso se aproximar do intervalo ou do \emph{timeout} de 2\,s, o que não
-testamos. A latência do cliente não muda, pelo mesmo motivo da subseção
-anterior.
+atraso se aproximar do intervalo ou do timeout de 2\,s, mas isso não testamos. A latência do cliente não muda pelo mesmo motivo da seção anterior.
 
 \subsection{Falhas}
-\begin{table}[t]
+\begin{table}[H]
 \centering
-\caption{Cenários de falha ($N=6$, nó 3, 5 execuções): tempo até algum
+\caption{Cenários de falha ($N=6$, nó 3, 5 execuções) - tempo até algum
 vizinho marcar o nó como inalcançável, tempo de recuperação após a
-cura/religamento e o pior caso de recuperação.}
+recuperação/restart e o pior caso de recuperação}
 \label{tab:falhas}
 \begin{tabular}{lrrr}
 \toprule
@@ -388,86 +259,49 @@ Falha & Detecção (s) & Recup. (s) & máx. (s) \\
 \bottomrule
 \end{tabular}
 \end{table}
-A Tabela~\ref{tab:falhas} mostra os dois cenários de falha. Na
-\emph{partição}, o nó 3 é desconectado da rede do Compose. Ele mantém seu
-estado, mas fica inacessível tanto para os vizinhos quanto para o cliente,
-porque a porta publicada passa pela mesma rede; nesse intervalo o restante
-do cluster continua recebendo escritas. Depois da reconexão, todos voltaram a
-um estado único em 2,73\,s em média (pior caso 3,99\,s), o que confirma L4.
-O caso com escritas dos dois lados da partição é coberto pelo teste ponta a
-ponta, que isola \texttt{node-1} parando \texttt{node-2} na cadeia e verifica
-que as operações não atravessam a partição e depois convergem. No
-\emph{reinício}, o nó 3 voltou como uma encarnação nova, sem nada em memória,
-e recuperou dos vizinhos o log inteiro (cerca de 1390 operações, uns 750\,kB
-em JSON) em 3,10\,s em média, o que confirma L3. Em ambos os cenários, entre
-58 e 85 requisições do cliente ao nó 3 falharam por execução, como esperado,
-já que o gerador de carga não troca de nó.
+A Tabela~\ref{tab:falhas} mostra os dois cenários de falha. Na partição, o nó 3 é desconectado da rede do Compose. Ele mantém seu estado, mas fica inacessível tanto para os vizinhos quanto para o cliente, porque a porta publicada passa pela mesma rede. Nesse intervalo o resto do cluster continua recebendo escritas. Depois da reconexão, todos voltaram a um estado único em 2,73\,s em média (pior caso 3,99\,s).
+O caso com escritas dos dois lados da partição é coberto pelo teste E2E, que isola node-1 parando node-2 na cadeia e verifica que as operações não atravessam a partição e depois convergem. No restart, o nó 3 voltou com label nova, sem nada na memória, e recuperou o log inteiro por meio dos vizinhos, totalizando cerca de 1390 operações, uns 750\,kB em JSON em 3,10\,s em média. Em ambos os cenários, entre 58 e 85 requisições do cliente ao nó 3 falharam por execução, como esperado, já que o gerador de carga não troca de nó.
 
-O tempo de detecção depende de três falhas consecutivas
-(\texttt{FAILURE\_THRESHOLD}), contadas só nas rodadas em que o nó 3 é
+O tempo de detecção depende de três falhas consecutivas (pode ser ajustado via variável de ambiente), contadas só nas rodadas em que o nó 3 é
 sorteado. Seus dois vizinhos (nós 2 e 4) têm grau 2 e o sorteiam com
-probabilidade $1/2$ por rodada, então cada um leva em média seis rodadas
+probabilidade $\frac12$ por rodada, então cada um leva em média seis rodadas
 para acumular três falhas, e o primeiro dos dois a chegar lá dá os
-4,55\,s observados no reinício, em que a conexão é recusada na hora. Na
-partição, os pacotes simplesmente somem e cada tentativa só falha ao
-estourar o \emph{timeout} de 2\,s, o que atrasa também a rodada seguinte
+4,55\,s observados no restart, onde a conexão é recusada na hora. Na
+partição, os pacotes simplesmente são droppados e cada tentativa só falha ao
+estourar o timeout de 2\,s, o que atrasa também a rodada seguinte
 daquele vizinho e explica os 5,37\,s. A variabilidade alta (IC de quase
-50\% da média) vem do próprio sorteio. Esse é o preço do $F=1$: o
-monitor observa cada vizinho com menos frequência.
+50\% da média) vem do próprio sorteio. Esse é o tradeoff de usar $F=1$, monitor observa cada vizinho com menos frequência.
 
-O reinício também mostra o custo do relógio: o nó religado ganha uma
-entrada nova e $E$ passa de 6 para 7 em todas as execuções; os bytes de
-relógio por operação sobem de 187 para 200. Como não há coleta de lixo, cada
-reinício deixa uma entrada permanente.
+O restart também mostra o custo do relógio. O nó reiniciado ganha uma
+entrada nova e $E$ passa de 6 para 7 em todas as execuções, e os bytes de
+relógio por operação sobem de 187 para 200. Como não há garbage collection cada
+restart deixa uma entrada permanente.
 
 \section{Limitações e melhorias}\label{sec:lim}
-Não há persistência, então uma operação que ainda não saiu do nó se perde se
+Não há persistência, então uma operação que ainda não saiu do nó é perdida se
 ele cair. A topologia é estática e não há entrada ou saída dinâmica de nós. O
-detector de falhas apenas registra o problema. Todos os números vêm de uma
-única máquina, e o harness com Toxiproxy suporta no máximo nove nós.
+detector de falhas apenas registra problemas, não tenta resolver. Todos os números vêm de uma única máquina e o conjunto completo com Toxiproxy suporta até nove nós.
 
-O sistema também não dá suporte a falhas bizantinas. Assumimos que todo nó
-segue o protocolo: um nó malicioso ou corrompido poderia anunciar um relógio
-falso (por exemplo, inflar contadores de outras encarnações e fazer os
-vizinhos acharem que já têm operações que nunca viram), forjar operações em
-nome de outra origem ou mandar estados diferentes para vizinhos diferentes.
-Nada disso é detectado, porque as mensagens não são autenticadas nem
-assinadas. Tolerar esse tipo de falha exigiria, no mínimo, assinar cada
-operação com a chave da origem e conferir os relógios recebidos contra as
-operações de fato entregues, o que está fora do escopo do trabalho.
+O sistema também não dá suporte a falhas ``bizantinas'' onde nós se tornam caóticos e não confiáveis. Assumimos que todo nó segue o protocolo, porque um nó malicioso ou corrompido poderia propagar um relógio falso (por exemplo, com contadores inflados de outras labels e fazer os vizinhos acharem que já têm operações que nunca viram), forjar operações em nome de outra origem ou mandar estados diferentes para vizinhos diferentes e nada disso é detectado. O motivo é que as mensagens não são autenticadas nem assinadas. Tolerar esse tipo de falha exigiria assinar operações e isso é fora do escopo do trabalho.
 
-A melhoria mais importante seria um \emph{coletor de lixo}. Hoje tombstones,
-log e entradas do relógio nunca são removidos, de modo que memória e
-metadados só crescem, principalmente quando há reinícios (cada encarnação
-nova deixa uma entrada permanente, como visto na Seção~\ref{sec:res}). Um
-coletor poderia se apoiar na \emph{estabilidade causal}: cada nó já recebe
-os relógios dos vizinhos na anti-entropia, e o mínimo entrada a entrada desses
-relógios indica as operações que todos os nós já aplicaram. Essas operações
-podem sair do log, e os tombstones correspondentes podem ser descartados,
-porque nenhuma réplica vai mais precisar delas no \emph{merge}. Da mesma forma,
-a entrada de uma encarnação antiga (anterior a um reinício) pode ser retirada
+A melhoria mais importante seria um coletor de lixo. Hoje tombstones, logs e entradas do relógio nunca são removidos, então a memória cresce sem limite, principalmente quando há reinícios (cada label nova deixa uma entrada permanente, como visto na Seção~\ref{sec:res}). Um coletor poderia se apoiar na estabilidade causal, cada nó já recebe os relógios dos vizinhos na anti-entropia, e o $\min(a, b) \forall (a, b) \in$ entradas dos relógios indica as operações que todos os nós já aplicaram. Essas operações podem sair do log, e os tombstones correspondentes podem ser descartados,
+porque nenhuma réplica vai mais precisar delas no merge. Da mesma forma,
+a entrada de uma label antiga (anterior a um restart) pode ser retirada
 do vetor quando todos os nós já tiverem visto todas as suas operações, já
 que ela nunca mais vai gerar operações novas. Isso manteria $E$ próximo de $N$
 mesmo com reinícios e limitaria o log ao trecho ainda não estável. A
 condição de segurança é que o coletor só avance com informação de
-\emph{todos} os nós; com um nó fora do ar ou particionado, a coleta para,
-mas o sistema continua correto.
+todos os nós. Com um nó fora do ar ou particionado, a coleta para,
+mas o sistema continua com corretude intacta.
 
 \section{Conclusões}
 Os dois algoritmos funcionaram juntos como esperado. A entrega causal com
-relógios vetoriais garantiu, em todas as 71 execuções, que nenhuma operação
-fosse aplicada fora de ordem ou duas vezes, e a anti-entropia levou todas as
+relógios vetoriais garantiu que em todas as 71 execuções nenhuma operação
+fosse aplicada fora de ordem ou duas vezes. A anti-entropia levou todas as
 réplicas ao mesmo estado tanto em operação normal quanto depois de partições e
-reinícios. Os números seguem o que a análise previa: a convergência cresce
-com o diâmetro do grafo e com o intervalo de gossip
-($\approx 0{,}6$--$0{,}7$ de $D\,T/p$, com o sorteio de um parceiro por
-rodada), as mensagens por operação caem quando o intervalo ou
-a carga sobem, e a latência do cliente não depende da replicação porque a
-escrita é local. O custo que mais chama atenção é o do relógio vetorial:
-ele cresce com o número de encarnações e já ocupa mais da metade de cada
-operação com seis nós. Uma continuação natural seria persistir o estado (para
-não criar uma entrada nova a cada reinício), implementar o coletor de lixo
-baseado em estabilidade causal descrito na Seção~\ref{sec:lim}, e trocar o relógio por operação por algo mais compacto, como
-\emph{dotted version vectors}.
+reinícios e os números seguem o que a análise previa, a convergência cresce
+com o diâmetro do grafo e com o intervalo de gossip ($\approx 0{,}6$--$0{,}7$ de $D\,T/p$, com o sorteio de um parceiro por rodada), as mensagens por operação caem quando o intervalo ou a carga sobem, e a latência do cliente não depende da replicação porque a
+escrita é local. O custo que mais chama atenção é o do relógio vetorial, porque ele cresce com o número de labels e já ocupa mais da metade de cada operação com seis nós. Uma continuação natural seria persistir o estado para não criar uma entrada nova a cada restart, implementar o coletor de lixo baseado em estabilidade causal descrito na Seção~\ref{sec:lim}, e trocar o relógio por operação por algo mais compacto como dotted version vectors.
 
 \end{document}
+
