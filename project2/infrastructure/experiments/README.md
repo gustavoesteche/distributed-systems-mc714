@@ -85,10 +85,13 @@ Each run writes `experiments/results/<utc-timestamp>-<name>/`:
 `analyze.py` reads every `summary.json` and writes `experiments/analysis/`:
 
 - `runs.csv` — one row per run with p50/p95/p99 latency, convergence,
-  recovery/detection, messages per operation and bytes per operation;
+  recovery/detection, messages per operation, bytes per operation and the
+  vector-clock size (`clock_entries_max`, `clock_bytes_max`, and per op
+  `op_clock_entries_mean`, `op_clock_bytes_mean`, `op_clock_share` = clock
+  bytes / op bytes, read from the final operation log);
 - `aggregate.csv` and `aggregate.json` — mean and 95% confidence interval per
   configuration;
-- `plots/*.png` — convergence vs nodes, messages vs interval, latency vs load,
+- `plots/*.png` — convergence vs nodes, vector clock bytes per op vs nodes, messages vs interval, latency vs load,
   and failure scenarios (when matplotlib is installed).
 
 ## Metrics
@@ -99,7 +102,7 @@ Each run writes `experiments/results/<utc-timestamp>-<name>/`:
   concurrent operations, gossip rounds/exchanges/failures, messages and bytes
   sent/received, and peer reachability transitions;
 - `pending_ops`, `applied_ops`, `tombstones`;
-- `clock` and `quantities`;
+- `clock`, `clock_entries`, `clock_bytes` (vector clock size) and `quantities`;
 - `peers` with each neighbor's monitor state.
 
 Convergence is declared when every node has the same clock, the same applied

@@ -272,6 +272,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--extra-edges", type=int, default=1)
     p.add_argument("--topology-seed", type=int, default=42)
     p.add_argument("--seed", type=int, default=1)
+    p.add_argument("--fanout", type=int, default=1, help="neighbors contacted per round (0 = all)")
+    p.add_argument("--gossip-seed", type=int, default=None, help="peer-selection seed (default: --seed)")
     p.add_argument("--rate", type=float, default=10)
     p.add_argument("--duration", default="20s")
     p.add_argument("--warmup", default="5s")
@@ -302,6 +304,8 @@ def main() -> int:
     if not 1 <= args.fault_node <= args.nodes:
         raise SystemExit("--fault-node must be within the cluster")
 
+    if args.gossip_seed is None:
+        args.gossip_seed = args.seed
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_id = f"{stamp}-{args.name}"
     run_dir = args.results_dir / run_id
@@ -313,6 +317,8 @@ def main() -> int:
         interval=args.interval,
         extra_edges=args.extra_edges,
         topology_seed=args.topology_seed,
+        fanout=args.fanout,
+        gossip_seed=args.gossip_seed,
         toxiproxy=args.toxiproxy,
     )
 
@@ -432,6 +438,8 @@ def main() -> int:
                 "extra_edges": args.extra_edges,
                 "topology_seed": args.topology_seed,
                 "seed": args.seed,
+                "fanout": args.fanout,
+                "gossip_seed": args.gossip_seed,
                 "rate": args.rate,
                 "duration": args.duration,
                 "warmup": args.warmup,

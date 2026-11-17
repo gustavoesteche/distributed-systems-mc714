@@ -34,13 +34,13 @@ A local op increments the replica's own clock entry and is applied immediately. 
 
 ## Anti-entropy round
 
-Every `GOSSIP_INTERVAL`, for each neighbor P in parallel:
+Every `GOSSIP_INTERVAL`, the node draws `GOSSIP_FANOUT` distinct neighbors uniformly at random (a per-node PCG stream seeded from `GOSSIP_SEED` and the node index, so runs are reproducible; `0` or a fanout ≥ the degree means every neighbor). For each chosen neighbor P, in parallel:
 
 1. Pull: send our clock; P returns its clock and the ops we lack.
 2. Apply them.
 3. Push the ops P lacks, if any.
 
-Received state is only merged through `Apply`, never overwritten.
+Received state is only merged through `Apply`, never overwritten. The failure monitor counts consecutive failures per neighbor only on the rounds that neighbor is actually contacted, so with a small fanout detection takes proportionally more rounds.
 
 ## Endpoints
 
@@ -77,7 +77,8 @@ Bodies are limited to 8 MiB (413) and must be one JSON value with exactly matchi
 
 `/debug/metrics` is the lightweight view used by experiment scripts. It
 returns `node`, `replica`, `uptime_seconds`, a `counters` object, the gauges
-`pending_ops`, `applied_ops` and `tombstones`, the vector `clock`, the visible
+`pending_ops`, `applied_ops` and `tombstones`, the vector `clock` with its size
+(`clock_entries`, and `clock_bytes` as encoded JSON), the visible
 `quantities`, and each neighbor's monitor `peers` state.
 
 Counters are cumulative and are reset only by a node restart:

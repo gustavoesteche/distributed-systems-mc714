@@ -21,6 +21,8 @@ def render(
     extra_edges: int = 1,
     topology_seed: int = 42,
     max_neighbors: int | None = None,
+    fanout: int = 1,
+    gossip_seed: int = 1,
     image: str = IMAGE,
     toxiproxy: bool = False,
     base_port: int = 8000,
@@ -35,6 +37,8 @@ def render(
         raise ValueError("max_neighbors must be between 2 and nodes-1")
     if extra_edges < 0:
         raise ValueError("extra_edges must be >= 0")
+    if fanout < 0:
+        raise ValueError("fanout must be >= 0 (0 = every neighbor)")
 
     peer_template = "http://toxiproxy:1000{index}" if toxiproxy else "http://{id}:8080"
     lines: list[str] = [
@@ -54,6 +58,8 @@ def render(
             f'      EXTRA_EDGES: "{extra_edges}"',
             f'      TOPOLOGY_SEED: "{topology_seed}"',
             f'      GOSSIP_INTERVAL: "{interval}"',
+            f'      GOSSIP_FANOUT: "{fanout}"',
+            f'      GOSSIP_SEED: "{gossip_seed}"',
             '      FAILURE_THRESHOLD: "3"',
             '      HTTP_TIMEOUT: "2s"',
             '      LOG_LEVEL: "info"',

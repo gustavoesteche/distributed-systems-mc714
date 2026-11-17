@@ -23,6 +23,8 @@ func TestLoadDefaults(t *testing.T) {
 		ExtraEdges:       1,
 		TopologySeed:     42,
 		GossipInterval:   time.Second,
+		GossipFanout:     1,
+		GossipSeed:       1,
 		HTTPAddr:         ":8080",
 		HTTPTimeout:      2 * time.Second,
 		FailureThreshold: 3,
@@ -36,7 +38,7 @@ func TestLoadDefaults(t *testing.T) {
 	// Every value can be overridden; NODE_COUNT is configurable.
 	c, err = Load(env(map[string]string{
 		"NODE_ID": "node-7", "NODE_COUNT": "8", "MAX_NEIGHBORS": "4", "EXTRA_EDGES": "3",
-		"TOPOLOGY_SEED": "7", "GOSSIP_INTERVAL": "50ms", "HTTP_ADDR": "127.0.0.1:0",
+		"TOPOLOGY_SEED": "7", "GOSSIP_INTERVAL": "50ms", "GOSSIP_FANOUT": "0", "GOSSIP_SEED": "9", "HTTP_ADDR": "127.0.0.1:0",
 		"HTTP_TIMEOUT": "200ms", "FAILURE_THRESHOLD": "5",
 		"PEER_URL_TEMPLATE": "http://127.0.0.1:90{index}", "LOG_LEVEL": "debug",
 	}))
@@ -44,7 +46,7 @@ func TestLoadDefaults(t *testing.T) {
 		t.Fatal(err)
 	}
 	if c.NodeIndex != 7 || c.NodeCount != 8 || c.MaxNeighbors != 4 || c.ExtraEdges != 3 ||
-		c.TopologySeed != 7 || c.GossipInterval != 50*time.Millisecond || c.HTTPAddr != "127.0.0.1:0" ||
+		c.TopologySeed != 7 || c.GossipInterval != 50*time.Millisecond || c.GossipFanout != 0 || c.GossipSeed != 9 || c.HTTPAddr != "127.0.0.1:0" ||
 		c.HTTPTimeout != 200*time.Millisecond || c.FailureThreshold != 5 || c.LogLevel != "debug" {
 		t.Fatalf("overrides not applied: %+v", c)
 	}

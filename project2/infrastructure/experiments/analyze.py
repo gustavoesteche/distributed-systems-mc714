@@ -37,6 +37,21 @@ def percentile(values: list[float], p: float) -> float:
     return ordered[lo] + (ordered[hi] - ordered[lo]) * (pos - lo)
 
 
+# Two-sided 95% Student-t critical values t_{0.975, df}, df = n-1. With only a
+# handful of repetitions per configuration the normal 1.96 understates the CI.
+_T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306,
+         9: 2.262, 10: 2.228, 11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145, 15: 2.131,
+         16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093, 20: 2.086, 25: 2.060, 30: 2.042,
+         40: 2.021, 60: 2.000, 120: 1.980}
+
+
+def t975(df: int) -> float:
+    """t_{0.975, df}; between tabulated df uses the next smaller df (conservative)."""
+    if df >= 1000:
+        return 1.960
+    return _T975[max(k for k in _T975 if k <= df)]
+
+
 def mean_ci95(values: list[float]) -> tuple[float, float]:
     if not values:
         return float("nan"), float("nan")
@@ -44,7 +59,7 @@ def mean_ci95(values: list[float]) -> tuple[float, float]:
         return values[0], 0.0
     mean = statistics.fmean(values)
     sd = statistics.stdev(values)
-    return mean, 1.96 * sd / math.sqrt(len(values))
+    return mean, t975(len(values) - 1) * sd / math.sqrt(len(values))
 
 
 def load_run(summary_path: Path) -> dict | None:
@@ -71,6 +86,8 @@ def load_run(summary_path: Path) -> dict | None:
                     successes.append(latency)
 
     counters: dict[str, int] = defaultdict(int)
+    clock_entries: list[int] = []
+    clock_bytes: list[int] = []
     for metrics_path in run_dir.glob("metrics-node-*.json"):
         try:
             view = json.loads(metrics_path.read_text(encoding="utf-8"))
@@ -80,6 +97,10 @@ def load_run(summary_path: Path) -> dict | None:
             continue
         for name, value in (view.get("counters") or {}).items():
             counters[name] += int(value)
+        clock = view.get("clock") or {}
+        clock_entries.append(int(view.get("clock_entries", len(clock))))
+        clock_bytes.append(int(view.get("clock_bytes", len(compact(clock)))))
+    op_clock = op_clock_overhead(run_dir)
 
     load = summary.get("load") or {}
     recorded = int(load.get("recorded") or 0)
@@ -92,6 +113,8 @@ def load_run(summary_path: Path) -> dict | None:
         "interval": config.get("interval"),
         "rate": config.get("rate"),
         "seed": config.get("seed"),
+        # Runs recorded before GOSSIP_FANOUT existed contacted every neighbor (0).
+        "fanout": config.get("fanout", 0),
         "fault": config.get("fault"),
         "fault_node": config.get("fault_node"),
         "latency_ms": config.get("latency_ms"),
@@ -113,9 +136,45 @@ def load_run(summary_path: Path) -> dict | None:
         "concurrent_ops_total": counters.get("concurrent_ops_detected_total", 0),
         "messages_per_op": (counters.get("messages_sent_total", 0) / recorded) if recorded else None,
         "bytes_per_op": (counters.get("bytes_sent_total", 0) / recorded) if recorded else None,
+        "clock_entries_max": max(clock_entries) if clock_entries else None,
+        "clock_bytes_max": max(clock_bytes) if clock_bytes else None,
+        **op_clock,
         "statuses": json.dumps(statuses, sort_keys=True),
     }
     return row
+
+
+def compact(value) -> str:
+    """JSON encoding as Go's encoding/json writes it on the wire."""
+    return json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+
+
+def op_clock_overhead(run_dir: Path) -> dict:
+    """Vector-clock metadata carried by each operation of one replica's log.
+
+    Every node holds the same log after convergence, so one state file is
+    enough; we take the one with the most ops in case a run did not converge.
+    """
+    best: list[dict] = []
+    for state_path in run_dir.glob("state-node-*.json"):
+        try:
+            ops = json.loads(state_path.read_text(encoding="utf-8")).get("ops") or []
+        except Exception:
+            continue
+        if len(ops) > len(best):
+            best = ops
+    if not best:
+        return {"op_clock_entries_mean": None, "op_clock_bytes_mean": None,
+                "op_bytes_mean": None, "op_clock_share": None}
+    entries = [len(op.get("clock") or {}) for op in best]
+    cbytes = [len(compact(op.get("clock") or {})) for op in best]
+    obytes = [len(compact(op)) for op in best]
+    return {
+        "op_clock_entries_mean": statistics.fmean(entries),
+        "op_clock_bytes_mean": statistics.fmean(cbytes),
+        "op_bytes_mean": statistics.fmean(obytes),
+        "op_clock_share": sum(cbytes) / sum(obytes),
+    }
 
 
 def interval_seconds(value: str | None) -> float:
@@ -149,6 +208,7 @@ def group_key(row: dict) -> tuple:
         row["rate"],
         row["fault"],
         row["latency_ms"],
+        row.get("fanout", 0),
     )
 
 
@@ -169,6 +229,9 @@ def aggregate(rows: list[dict]) -> list[dict]:
         msg_mean, msg_ci = mean_ci95(msg)
         lat = values("latency_p95_ms")
         lat_mean, lat_ci = mean_ci95(lat)
+        ce_mean, ce_ci = mean_ci95(values("clock_entries_max"))
+        ocb_mean, ocb_ci = mean_ci95(values("op_clock_bytes_mean"))
+        share_mean, share_ci = mean_ci95(values("op_clock_share"))
         out.append({
             "suite": key[0],
             "nodes": key[1],
@@ -176,6 +239,7 @@ def aggregate(rows: list[dict]) -> list[dict]:
             "rate": key[3],
             "fault": key[4],
             "latency_ms": key[5],
+            "fanout": key[6],
             "runs": len(members),
             "convergence_mean_ms": conv_mean,
             "convergence_ci95_ms": conv_ci,
@@ -191,6 +255,12 @@ def aggregate(rows: list[dict]) -> list[dict]:
             "messages_per_op_ci95": msg_ci,
             "latency_p95_mean_ms": lat_mean,
             "latency_p95_ci95_ms": lat_ci,
+            "clock_entries_mean": ce_mean,
+            "clock_entries_ci95": ce_ci,
+            "op_clock_bytes_mean": ocb_mean,
+            "op_clock_bytes_ci95": ocb_ci,
+            "op_clock_share_mean": share_mean,
+            "op_clock_share_ci95": share_ci,
         })
     return out
 
@@ -236,6 +306,12 @@ def make_plots(rows: list[dict], out_dir: Path) -> None:
     if s:
         plot_series(*s, "nodes", "convergence (ms)", "Convergence vs cluster size",
                     plots / "convergence_vs_nodes.png")
+
+    s = series(lambda a: a.get("suite") == "nodes" and all(a[k] == v for k, v in base.items()),
+               lambda a: a["nodes"], "op_clock_bytes_mean", "op_clock_bytes_ci95")
+    if s:
+        plot_series(*s, "nodes", "vector clock bytes / op", "Vector clock size vs cluster size",
+                    plots / "clock_bytes_vs_nodes.png")
 
     s = series(lambda a: a.get("suite") == "interval",
                lambda a: interval_seconds(a["interval"]), "messages_per_op_mean", "messages_per_op_ci95")
