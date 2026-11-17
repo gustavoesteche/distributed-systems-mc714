@@ -19,20 +19,18 @@
 \title{Carrinho de Compras Replicado com Relógios Vetoriais e Replicação Epidêmica}
 
 \author{\IEEEauthorblockN{Gustavo Esteche (256223) \quad Lucas Rodrigues (252615)}
-\IEEEauthorblockA{Repositório: ??? \\ Vídeo: ???}}
+\IEEEauthorblockA{Repositório: https://github.com/gustavoesteche/distributed-systems-mc714/tree/main/project2 \\ Vídeo: ???}}
 
 \maketitle
 
-\todo[inline]{COLOCAR UM REPO NO SUBTÍTULO E GRAVAR O VÍDEO!}
-
 \section{Introdução}
-Sistemas de compras precisam que seus serviços de carrinho continuem aceitando itens mesmo quando parte do sistema está fora do ar. Nesse cenário, é desejado escolher o "CA" do teorema "CAP": consistência e disponibilidade. Adotamos também um modelo multi-líder: qualquer nó aceita \texttt{ADD} e \texttt{REMOVE} de itens no carrinho na hora e repassa a operação depois.
+Sistemas de compras precisam que seus serviços de carrinho continuem aceitando itens mesmo quando parte do sistema está fora do ar. Pelo teorema CAP, durante uma partição de rede é preciso escolher entre consistência forte e disponibilidade. Escolhemos disponibilidade (AP): toda réplica continua aceitando escritas mesmo isolada, e a consistência passa a ser eventual, ou seja, as réplicas convergem quando a comunicação volta. Adotamos também um modelo multi-líder: qualquer nó aceita \texttt{ADD} e \texttt{REMOVE} de itens no carrinho na hora e repassa a operação depois.
 
-Esse modelo tem dois problemas principais. Primeiro, operações precisam ser aplicadas na ordem certa, e as concorrentes precisam ser identificadas. Para isso, usamos relógios vetoriais com entrega causal, implementados em cima da teoria dos relógios lógicos de Lamport, que conseguem distinguir concorrência de causalidade.
+Esse modelo tem dois problemas principais. Primeiro, operações precisam ser aplicadas na ordem certa, e as concorrentes precisam ser identificadas. Para isso, usamos relógios vetoriais com entrega causal, construídos sobre a teoria dos relógios lógicos de Lamport, que conseguem distinguir concorrência de causalidade.
 
 O segundo problema é que toda operação tem que chegar a todas as réplicas, e para isso fazemos replicação epidêmica por anti-entropia. Os dois algoritmos trabalham em conjunto, visto que o relógio vetorial de cada réplica é o resumo da anti-entropia para saber quais informações faltam em cada uma.
 
-Ambos os algoritmos foram implementados em Go com a biblioteca padrão. Com eles, montamos um carrinho de $N$ réplicas, cada uma no seu próprio container. O serviço de carrinho aceita operações de escrita de qualquer nó e é capaz de voltar a um estado comum por conta própria depois de partições e restarts.
+Ambos os algoritmos foram implementados do zero em Go, usando apenas a biblioteca padrão, seguindo as descrições de e das referências citadas. Nenhum código de terceiros foi reutilizado. Com eles, montamos um carrinho de $N$ réplicas, cada uma no seu próprio container. O serviço de carrinho aceita operações de escrita de qualquer nó e é capaz de voltar a um estado comum por conta própria depois de partições e restarts.
 
 A corretude dos algoritmos pode ser verificada com testes automatizados (unitários, integração e E2E) e por um script que confere o estado final de todos os nós no fim dos experimentos. Para avaliar o desempenho, foi medido o tempo de convergência, mensagens por operação, latência de escrita e tamanho do relógio vetorial, variando o número $N$ de nós, intervalo de gossip, carga e atraso de rede, além de dois cenários de falha intencionalmente provocada.
 
@@ -40,7 +38,6 @@ A corretude dos algoritmos pode ser verificada com testes automatizados (unitár
 Todas as réplicas rodam o mesmo executável (\texttt{cmd/node}), cada um em um
 container próprio, configurado por variáveis de ambiente do \texttt{compose.yaml}. A comunicação é em HTTP (JSON) pela rede \texttt{gossip-net} em modo bridge, e cada nó encontra os outros pelo nome (\texttt{node-$k$}) via DNS do Compose.
 
-\newpage
 O código está dividido nas seguintes funcionalidades:
 
 \begin{itemize}
@@ -59,7 +56,7 @@ Cada vez que um nó sobe ele ganha o label \texttt{node-$k$@<nanossegundos do bo
 
 A semântica do carrinho é bem simples: \texttt{ADD(p, q)} cria $q$ unidades do produto
 $p$, e \texttt{REMOVE(p,q)} marca como removidas (tombstones) as $q$
-menores unidades ``vivas'' de $p$, listando-as na própria operação. Se não houver unidades suficientes, a resposta é 409 Conflict. A quantidade de um produto é o número de unidades ``vivas''. Na prática isso é um conjunto observed remove em que a adição vence concorrências, quando uma unidade é adicionada na mesma hora que um outro nó executa um \texttt{REMOVE} a adição não é afetada por ele.
+menores unidades ``vivas'' de $p$, listando-as na própria operação. Se não houver unidades suficientes, a resposta é 409 Conflict. A quantidade de um produto é o número de unidades ``vivas''. Na prática isso é um conjunto observed remove (OR-Set) em que a adição vence concorrências, quando uma unidade é adicionada na mesma hora que um outro nó executa um \texttt{REMOVE} a adição não é afetada por ele.
 
 \section{Algoritmo 1 - relógios vetoriais e entrega causal}\label{sec:alg1}
 \subsection{Funcionamento}
@@ -108,7 +105,7 @@ O sorteio usa um RNG próprio de cada nó, com semente configurável combinada a
 Cada nó também mantém um contador de falhas seguidas por vizinho, atualizado somente nas rodadas em que aquele vizinho é sorteado. Ao chegar em três (configurável, poderia ser qualquer valor inteiro positivo), ele registra uma métrica \texttt{gossip\_peer\_unreachable}, que serve só para observação e não muda o comportamento do sistema.
 
 \subsection{Modelo do sistema}
-A segurança do sistema não depende do tempo, porém para a vivacidade precisamos de sincronia: depois que a rede se recupera de alguma falha, as mensagens entre vizinhos têm que chegar antes do timeout das requisições (por padrão, 2 segundos). Os canais são HTTP sobre TCP, então uma troca perdida é simplesmente retentada no futuro caso o mesmo par seja sorteado. Pela propriedade 2, as operações são idempotentes. Tratamos crash recovery sem persistência ou particionamento da rede, com uma limitação que optamos por manter: quando um nó cai antes que a operação seja repassada, ela é perdida.
+Adotamos um modelo parcialmente síncrono. A segurança não depende do tempo, mas, para a vivacidade, supomos que após um instante de estabilização desconhecido (por exemplo, quando a rede se recupera de uma falha) as mensagens entre vizinhos chegam antes do timeout das requisições (por padrão, 2 segundos). Os canais são HTTP sobre TCP, então uma troca perdida é simplesmente retentada no futuro caso o mesmo par seja sorteado. Pela propriedade 2, as operações são idempotentes. Tratamos crash recovery sem persistência ou particionamento da rede, com uma limitação que optamos por manter: quando um nó cai antes que a operação seja repassada, ela é perdida.
 
 \subsection{Propriedades}
 
@@ -188,7 +185,7 @@ Configuração & Conv. (s) & msg/op & p99 (ms) & $E$ & B/op & \%op \\
 A Tabela~\ref{tab:res} resume as 71 execuções, e os valores por execução estão em \texttt{runs.csv}. Todas convergiram e todas passaram na verificação de estado.
 
 \subsection{Número de nós}
-\begin{figure}[H]
+\begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figs/nos.pdf}
 \caption{Convergência (azul) e bytes do relógio vetorial por operação
@@ -212,7 +209,7 @@ JSON. Para um carrinho com poucos itens por operação, o relógio se torna o ma
 componente da mensagem e o custo $O(N)$ por operação seria o primeiro problema a aparecer quando escalar. As mensagens de gossip por operação (0,5, 0,7 e 1,0) crescem em função de $N$ porque há $N$ nós sorteando parceiros a cada rodada.
 
 \subsection{Intervalo de gossip}
-\begin{figure}[H]
+\begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figs/intervalo.pdf}
 \caption{Mensagens por operação (azul) e convergência (laranja) para
@@ -222,7 +219,7 @@ intervalos de 0,25, 1 e 4\,s, $N=6$. Eixo $x$ em escala log.}
 Aqui aparece o compromisso da anti-entropia (Fig.~\ref{fig:int}). Com o intervalo 16 vezes maior (0,25\,s $\to$ 4\,s), as mensagens por operação caem de 2,4 para 0,2 e a convergência sobe de 0,68\,s para 9,65\,s. As duas grandezas variam quase proporcionalmente ao intervalo, porque o número de trocas por segundo é fixo ($N F/T$) e a convergência fica em $0{,}60$--$0{,}68$ de $D\,T/p$ ($=4T$ para o anel de seis nós) nos três níveis. O tamanho do relógio não muda com o intervalo.
 
 \subsection{Carga}
-\begin{figure}[H]
+\begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figs/carga.pdf}
 \caption{Percentis de latência de escrita vistos pelo cliente em função da
@@ -245,7 +242,7 @@ momento em que cada salto termina. Esperamos que o efeito apareça quando o
 atraso se aproximar do intervalo ou do timeout de 2\,s, mas isso não testamos. A latência do cliente não muda pelo mesmo motivo da seção anterior.
 
 \subsection{Falhas}
-\begin{table}[H]
+\begin{table}[!t]
 \centering
 \caption{Cenários de falha ($N=6$, nó 3, 5 execuções) - tempo até algum
 vizinho marcar o nó como inalcançável, tempo de recuperação após a
@@ -302,6 +299,5 @@ réplicas ao mesmo estado tanto em operação normal quanto depois de partiçõe
 reinícios e os números seguem o que a análise previa, a convergência cresce
 com o diâmetro do grafo e com o intervalo de gossip ($\approx 0{,}6$--$0{,}7$ de $D\,T/p$, com o sorteio de um parceiro por rodada), as mensagens por operação caem quando o intervalo ou a carga sobem, e a latência do cliente não depende da replicação porque a
 escrita é local. O custo que mais chama atenção é o do relógio vetorial, porque ele cresce com o número de labels e já ocupa mais da metade de cada operação com seis nós. Uma continuação natural seria persistir o estado para não criar uma entrada nova a cada restart, implementar o coletor de lixo baseado em estabilidade causal descrito na Seção~\ref{sec:lim}, e trocar o relógio por operação por algo mais compacto como dotted version vectors.
-
 \end{document}
 
